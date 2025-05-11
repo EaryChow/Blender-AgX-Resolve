@@ -69,7 +69,7 @@ Input CIE colourimetry primaries for getting the values into the DCTL node
 CIE colourimetry primaries for the working space. The input is transformed from the input primaries to the working primaries before all the AgX mechanism steps. This separates the input and the working space, making the node flexible for different input encodings.
 
 ## Input Transfer Characteristic Encoding
-Input transfer characteristic. Now you can avoid a CST if coming from an EXR.
+Input transfer characteristic that will be "undone" into linear before applying the Inset mechanism etc..
 
 ## Working Log Encoding
 Log-like transfer for the working space.
@@ -99,7 +99,13 @@ Toggle to control whether to encode to the Working Log Encoding with Output Prim
 This is experimental only, no guarantee of final design. But testers will be appreciated.
 
 ## Use HDR
-Checkbox to enable HDR-specific logic.
+Checkbox to enable HDR-specific logic. When enabled, the middle grey of the image will be darkened. Darnken by how much, depends on the HDR_Peak/SDR_Peak ratio determined by the following two settings.
+
+## HDR Peak Nits
+The peak nits for HDR output. UI limited to [400, 1000] with default of 1000.
+
+## SDR Peak Nits
+The SDR peak nits assumption. UI limted to [100, 400] with default of 203.
 
 ## HDR as percentage for SDR
 In case `Use HDR` is checked with the output transfer function set to SDR ones. If checked, it outputs the image with a darkened middle grey. If not checked, it outputs the darkened-middle-grey image being scaled backup globally (which means clipping might occur). Default is checked to avoid output clipping. 

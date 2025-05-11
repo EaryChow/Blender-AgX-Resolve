@@ -31,7 +31,7 @@ You'll have to take it for a try.
 # How
 
   1. Install as per Where above.
-      1. Place the DCTL node. Select the Blender-AgX DCTL. Unlike the original AgX-Resolve repo, this fork defaults the input to Linear Rec.709, and then separately defines the working primaries, hence not requiring an pre-transform.
+      1. Place the DCTL node. Select the Blender-AgX DCTL. Unlike the original AgX-Resolve repo, this fork defaults the input to Linear Rec.709, and then separately defines the working primaries, hence not requiring a pre-transform before the DCTL node.
 2. Experiment.
 
 Note that defaults are set for matching Blender's results.
@@ -81,7 +81,7 @@ Output primaries encoding.
 Offset added to the Working middle grey point in Log state. When offset is 0, the working Log middle grey is at where the working log would encode from linear 0.18, in othe words, lin_to_log(0.18).
 
 ## Log2 Min and Max Stop
-These two settings are only used when the working Log is set to `Generic Log`, which is a user controlled pure Log2 curve.
+These two settings are only used when the working Log is set to `Generic Log2`, which is a user controlled pure Log2 curve.
 
 ## Per-Channel Hue Flight
 Controls the strength of the Per-Channel Hue Flight, 0 means completely chromaticity-linear, 1 means compeletely per-channel, default is set to 0.4 for matching Blender.

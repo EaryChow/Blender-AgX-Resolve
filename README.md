@@ -69,7 +69,7 @@ Input CIE colourimetry primaries for getting the values into the DCTL node
 CIE colourimetry primaries for the working space. The input is transformed from the input primaries to the working primaries before all the AgX mechanism steps. This separates the input and the working space, making the node flexible for different input encodings.
 
 ## Input Transfer Characteristic Encoding
-Input transfer characteristic. Now you can avoid a CST if coming from an EXR.
+Input transfer characteristic that will be "undone" into linear before applying the Inset mechanism etc..
 
 ## Working Log Encoding
 Log-like transfer for the working space.

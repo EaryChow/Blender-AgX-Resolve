@@ -94,3 +94,7 @@ This is the "Lower Guard Rail" used in Blender's AgX to handle negative values.
 
 ## Log Encoded Output
 Toggle to control whether to encode to the Working Log Encoding with Output Primaries for the output
+
+## Experimental HDR
+An experimental branch with HDR support is here: https://github.com/EaryChow/Blender-AgX-Resolve/tree/Blender-AgX-DCTL-HDR-Experimental
+This HDR branch is experimental, testing things out, no guarantee of final design. But testers will be appreciated.

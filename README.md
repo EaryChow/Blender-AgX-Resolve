@@ -99,7 +99,7 @@ Toggle to control whether to encode to the Working Log Encoding with Output Prim
 This is experimental only, no guarantee of final design. But testers will be appreciated.
 
 ## Use HDR
-Checkbox to enable HDR-specific logic. When enabled, the middle grey of the image will be darkened. Darnken by how much, depends on the HDR_Peak/SDR_Peak ratio determined by the following two settings.
+Checkbox to enable HDR-specific logic. When enabled, the middle grey of the image will be darkened. Darken by how much, depends on the HDR_Peak/SDR_Peak ratio determined by the following two settings.
 
 ## HDR Peak Nits
 The peak nits for HDR output. UI limited to [400, 1000] with default of 1000.

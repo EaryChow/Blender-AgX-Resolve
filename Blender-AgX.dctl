@@ -1,0 +1,402 @@
+DEFINE_UI_PARAMS(rc, Red Attenuation Rate, DCTLUI_SLIDER_FLOAT, 0.330, 0, 0.6, 0.001)
+DEFINE_UI_PARAMS(gc, Green Attenuation Rate, DCTLUI_SLIDER_FLOAT, 0.281, 0, 0.6, 0.001)
+DEFINE_UI_PARAMS(bc,Blue Attenuation Rate, DCTLUI_SLIDER_FLOAT, 0.125, 0, 0.6, 0.001)
+DEFINE_UI_PARAMS(ored, Red Hue Flight, DCTLUI_SLIDER_FLOAT, 2.14, -10.0, 10.0, 0.01)
+DEFINE_UI_PARAMS(og, Green Hue Flight, DCTLUI_SLIDER_FLOAT, -1.23, -10.0, 10.0, 0.01)
+DEFINE_UI_PARAMS(ob, Blue Hue Flight, DCTLUI_SLIDER_FLOAT, -3.05, -10.0, 10.0, 0.01)
+DEFINE_UI_PARAMS(r_restore, Red Purity, DCTLUI_SLIDER_FLOAT, 0.323, 0, 0.6, 0.001)
+DEFINE_UI_PARAMS(g_restore, Green Purity, DCTLUI_SLIDER_FLOAT, 0.283, 0, 0.6, 0.001)
+DEFINE_UI_PARAMS(b_restore, Blue Purity, DCTLUI_SLIDER_FLOAT, 0.037, 0, 0.6, 0.001)
+DEFINE_UI_PARAMS(outset_r_rot, Reverse Red Hue Flight, DCTLUI_SLIDER_FLOAT, 0, -10.0, 10.0, 0.01)
+DEFINE_UI_PARAMS(outset_g_rot, Reverse Green Hue Flight, DCTLUI_SLIDER_FLOAT, 0, -10.0, 10.0, 0.01)
+DEFINE_UI_PARAMS(outset_b_rot, Reverse Blue Hue Flight, DCTLUI_SLIDER_FLOAT, 0, -10.0, 10.0, 0.01)
+DEFINE_UI_PARAMS(use_inverse_inset, Use Inverse of Inset for Outset, DCTLUI_CHECK_BOX, 0)
+DEFINE_UI_PARAMS(tp, Toe Contrast Power, DCTLUI_SLIDER_FLOAT, 1.5, 0.7, 10, 0.1)
+DEFINE_UI_PARAMS(sp, Shoulder Contrast Power, DCTLUI_SLIDER_FLOAT, 1.5, 0.7, 10, 0.1)
+DEFINE_UI_PARAMS(slope, General Contrast Power, DCTLUI_SLIDER_FLOAT, 2.4, 1.4, 4, 0.1)
+DEFINE_UI_PARAMS(in_gamut, Input Primaries, DCTLUI_COMBO_BOX, 5, {ap0, ap1, p3d65,p3d60, rec2020, rec709, awg3, awg4,rwg, sgamut3,sgamut3cine, blackmagicwg, canoncinema, davinciwg,egamut, agx_log_blender}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut, AgX Log Blender})
+DEFINE_UI_PARAMS(working_gamut, Working Primaries, DCTLUI_COMBO_BOX, 4, {workingap0, workingap1, workingp3d65, workingp3d60, workingrec2020, workingrec709, workingawg3, workingawg4, workingrwg, workingsgamut3,workingsgamut3cine, workingblackmagicwg, workingcanoncinema, workingdavinciwg,workingegamut}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
+DEFINE_UI_PARAMS(in_transfer, Input Transfer Characteristic Encoding, DCTLUI_COMBO_BOX, 0, {in_linear, in_acescct, in_arri_logc, in_arri_logc4, in_red_log3g10, in_sony_slog3, in_blackmagic_film_gen5, in_canonlog3, in_davinci_intermediate, in_filmlight_tlog, in_AgX_Log_Kraken, in_AgX_Log_Blender}, {Linear, ACEScct, Arri V3LogC,Arri LogCV4, Red Log3G10, Sony SLog3, Blackmagic Film Gen5, Canon Log3, DaVinci Intermediate,Filmlight TLog, AgX Log Kraken, AgX Log Blender})
+DEFINE_UI_PARAMS(working_log, Working Log Encoding, DCTLUI_COMBO_BOX, 11, {linear, acescct, arri_logc,arri_logc4, red_log3g10, sony_slog3, blackmagic_film_gen5, canonlog3, davinci_intermediate,filmlight_tlog,AgX_Log_Kraken, generic_log2}, {Linear, ACEScct, Arri V3LogC,Arri LogCV4, Red Log3G10, Sony SLog3, Blackmagic Film Gen5, Canon Log3, DaVinci Intermediate,Filmlight TLog, AgX Log Kraken, Generic Log2})
+DEFINE_UI_PARAMS(generic_log2_min, Log2 Min Stop, DCTLUI_SLIDER_FLOAT, -10, -15, -5, 0.1)
+DEFINE_UI_PARAMS(generic_log2_max, Log2 Max Stop, DCTLUI_SLIDER_FLOAT, 6.5, 2.8, 38, 0.1)
+DEFINE_UI_PARAMS(pivot_offset, Contrast Pivot Offset, DCTLUI_SLIDER_FLOAT, 0, -0.3, 0.18, 0.01)
+DEFINE_UI_PARAMS(out_gamut, Output Primaries, DCTLUI_COMBO_BOX, 5, {outap0, outap1, outp3d65, outp3d60, outrec2020, outrec709, outawg3, outawg4, outrwg, outsgamut3, outsgamut3cine, outblackmagicwg, outcanoncinema, outdavinciwg, outegamut}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
+DEFINE_UI_PARAMS(out_transfer, Output Transfer, DCTLUI_COMBO_BOX, 1, {out_linear, out_sRGB_inverse_EOTF, out_BT1886_inverse_EOTF}, { Linear, sRGB Inverse EOTF 2.2, BT.1886 Inverse EOTF 2.4})
+DEFINE_UI_PARAMS(logoutput, Log Encoded Output, DCTLUI_CHECK_BOX, 0)
+DEFINE_UI_PARAMS(angle_lerp, Per-Channel Hue Flight, DCTLUI_SLIDER_FLOAT, 0.4, 0.0, 1.0, 0.01)
+DEFINE_UI_PARAMS(tinting_outset, Tinting Scale, DCTLUI_SLIDER_FLOAT, 0, -0.2, 0.2, 0.001)
+DEFINE_UI_PARAMS(tinting_rotate, Tinting Hue, DCTLUI_SLIDER_FLOAT, 0, -180, 180, 0.001)
+DEFINE_UI_PARAMS(use_compensate_low_side, Compensate for the Negatives, DCTLUI_CHECK_BOX, 1)
+
+#include "Blender-AgX-Lib.h"
+
+// title: Blender-AgX.dctl
+// version: 2025-05-09
+
+__DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
+{
+  float3x3 in_to_xyz;
+  float3x3 out_to_xyz;
+  Chromaticities in_chromaticities = {{0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}};
+  Chromaticities working_chromaticities = {{0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}};
+  Chromaticities out_chromaticities = {{0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}};
+  float out_transfer_function = 0.0;
+
+  if (in_gamut == ap0) {
+    in_to_xyz = matrix_ap0_to_xyz;
+    in_chromaticities = AP0;
+  }
+  else if (in_gamut == ap1) {
+    in_to_xyz = matrix_ap1_to_xyz;
+    in_chromaticities = AP1;
+  }
+  else if (in_gamut == p3d65){
+    in_to_xyz = matrix_p3d65_to_xyz;
+    in_chromaticities = P3D65_PRI;
+  }
+  else if (in_gamut == p3d60){
+    in_to_xyz = RGBtoXYZ(P3D60_PRI);
+    in_chromaticities = P3D60_PRI;
+  }
+  else if (in_gamut == rec2020){
+    in_to_xyz = matrix_rec2020_to_xyz;
+    in_chromaticities = REC2020_PRI;
+  }
+  else if (in_gamut == rec709){
+    in_to_xyz = matrix_rec709_to_xyz;
+    in_chromaticities = REC709_PRI;
+  }
+  else if (in_gamut == awg3){
+    in_to_xyz = matrix_arriwg_to_xyz;
+    in_chromaticities = ARRI_ALEXA_WG_PRI;
+  }
+  else if (in_gamut == rwg){
+    in_to_xyz = matrix_redwg_to_xyz;
+    in_chromaticities = REDWG_PRI;
+  }
+  else if (in_gamut == sgamut3){
+    in_to_xyz = matrix_sonysgamut3;
+    in_chromaticities = SGAMUT3_PRI;
+  }
+  else if (in_gamut == blackmagicwg){
+    in_to_xyz = matrix_blackmagicwg_to_xyz;
+    in_chromaticities = BLACKMAGICWG_PRI;
+  }
+  else if (in_gamut == canoncinema){
+    in_to_xyz = matrix_canoncinema_to_xyz;
+    in_chromaticities = CANONCINEMA_PRI;
+  }
+  else if (in_gamut == davinciwg){
+    in_to_xyz = matrix_davinciwg_to_xyz;
+    in_chromaticities = DWGINT_PRI;
+  }
+  else if (in_gamut == egamut){
+    in_to_xyz = matrix_egamut_to_xyz;
+    in_chromaticities = EGAMUT_PRI;
+  }
+  else if (in_gamut == awg4){
+    in_to_xyz = RGBtoXYZ(ARRI_ALEXA_WG4_PRI);
+    in_chromaticities = ARRI_ALEXA_WG4_PRI;
+  }
+  else if (in_gamut == sgamut3cine){
+    in_to_xyz = RGBtoXYZ(SGAMUT3cine_PRI);
+    in_chromaticities = SGAMUT3cine_PRI;
+  }
+  else if (in_gamut == agx_log_blender){
+    in_to_xyz = RGBtoXYZ(AGX_LOG_BLENDER_PRI);
+    in_chromaticities = AGX_LOG_BLENDER_PRI;
+  }
+
+  // Process Working Primaries
+  if (working_gamut == workingap0) {
+    working_chromaticities = AP0;
+  }
+  else if (working_gamut == workingap1) {
+    working_chromaticities = AP1;
+  }
+  else if (working_gamut == workingp3d65){
+    working_chromaticities = P3D65_PRI;
+  }
+  else if (working_gamut == workingp3d60){
+    working_chromaticities = P3D60_PRI;
+  }
+  else if (working_gamut == workingrec2020){
+    working_chromaticities = REC2020_PRI;
+  }
+  else if (working_gamut == workingrec709){
+    working_chromaticities = REC709_PRI;
+  }
+  else if (working_gamut == workingawg3){
+    working_chromaticities = ARRI_ALEXA_WG_PRI;
+  }
+  else if (working_gamut == workingrwg){
+    working_chromaticities = REDWG_PRI;
+  }
+  else if (working_gamut == workingsgamut3){
+    working_chromaticities = SGAMUT3_PRI;
+  }
+  else if (working_gamut == workingblackmagicwg){
+    working_chromaticities = BLACKMAGICWG_PRI;
+  }
+  else if (working_gamut == workingcanoncinema){
+    working_chromaticities = CANONCINEMA_PRI;
+  }
+  else if (working_gamut == workingdavinciwg){
+    working_chromaticities = DWGINT_PRI;
+  }
+  else if (working_gamut == workingegamut){
+    working_chromaticities = EGAMUT_PRI;
+  }
+  else if (working_gamut == workingawg4){
+    working_chromaticities = ARRI_ALEXA_WG4_PRI;
+  }
+  else if (working_gamut == workingsgamut3cine){
+    working_chromaticities = SGAMUT3cine_PRI;
+  }
+
+  if (out_gamut == outap0) {
+    out_to_xyz = matrix_ap0_to_xyz;
+    out_chromaticities = AP0;
+  }
+  else if (out_gamut == outap1) {
+    out_to_xyz = matrix_ap1_to_xyz;
+    out_chromaticities = AP1;
+  }
+  else if (out_gamut == outp3d65){
+    out_to_xyz = matrix_p3d65_to_xyz;
+    out_chromaticities = P3D65_PRI;
+  }
+  else if (out_gamut == outp3d60){
+    out_to_xyz = RGBtoXYZ(P3D60_PRI);
+    out_chromaticities = P3D60_PRI;
+  }
+  else if (out_gamut == outrec2020){
+    out_to_xyz = matrix_rec2020_to_xyz;
+    out_chromaticities = REC2020_PRI;
+  }
+  else if (out_gamut == outrec709){
+    out_to_xyz = matrix_rec709_to_xyz;
+    out_chromaticities = REC709_PRI;
+  }
+  else if (out_gamut == outawg3){
+    out_to_xyz = matrix_arriwg_to_xyz;
+    out_chromaticities = ARRI_ALEXA_WG_PRI;
+  }
+  else if (out_gamut == outrwg){
+    out_to_xyz = matrix_redwg_to_xyz;
+    out_chromaticities = REDWG_PRI;
+  }
+  else if (out_gamut == outsgamut3){
+    out_to_xyz = matrix_sonysgamut3;
+    out_chromaticities = SGAMUT3_PRI;
+  }
+  else if (out_gamut == outblackmagicwg){
+    out_to_xyz = matrix_blackmagicwg_to_xyz;
+    out_chromaticities = BLACKMAGICWG_PRI;
+  }
+  else if (out_gamut == outcanoncinema){
+    out_to_xyz = matrix_canoncinema_to_xyz;
+    out_chromaticities = CANONCINEMA_PRI;
+  }
+  else if (out_gamut == outdavinciwg){
+    out_to_xyz = matrix_davinciwg_to_xyz;
+    out_chromaticities = DWGINT_PRI;
+  }
+  else if (out_gamut == outegamut){
+    out_to_xyz = matrix_egamut_to_xyz;
+    out_chromaticities = EGAMUT_PRI;
+  }
+  else if (out_gamut == outawg4){
+    out_to_xyz = RGBtoXYZ(ARRI_ALEXA_WG4_PRI);
+    out_chromaticities = ARRI_ALEXA_WG4_PRI;
+  }
+  else if (out_gamut == outsgamut3cine){
+    out_to_xyz = RGBtoXYZ(SGAMUT3cine_PRI);
+    out_chromaticities = SGAMUT3cine_PRI;
+  }
+
+  if (out_transfer == out_linear) {
+    out_transfer_function = 1.0;
+  }
+  else if (out_transfer == out_sRGB_inverse_EOTF) {
+    out_transfer_function = 2.2;
+  }
+  else if (out_transfer == out_BT1886_inverse_EOTF) {
+    out_transfer_function = 2.4;
+  }
+
+  int in_tf = 0;
+
+  if (in_transfer == in_linear) {
+    in_tf = 0;
+  }
+  else if (in_transfer == in_acescct) {
+    in_tf = 1;
+  }
+  else if (in_transfer == in_arri_logc) {
+    in_tf = 2;
+  }
+  else if (in_transfer == in_red_log3g10) {
+    in_tf = 3;
+  }
+  else if (in_transfer == in_sony_slog3) {
+    in_tf = 4;
+  }
+  else if (in_transfer == in_filmlight_tlog) {
+    in_tf = 5;
+  }
+  else if (in_transfer == in_davinci_intermediate) {
+    in_tf = 6;
+  }
+  else if (in_transfer == in_blackmagic_film_gen5) {
+    in_tf = 7;
+  }
+  else if (in_transfer == in_canonlog3) {
+    in_tf = 8;
+  }
+  else if (in_transfer == in_arri_logc4) {
+    in_tf = 9;
+  }
+  else if (in_transfer == in_AgX_Log_Kraken) {
+    in_tf = 10;
+  }
+  else if (in_transfer == in_AgX_Log_Blender) {
+    in_tf = 13;
+  }
+
+  int tf = 0;
+
+  if (working_log == linear) {
+    tf = 0;
+  }
+  else if (working_log == acescct) {
+    tf = 1;
+  }
+  else if (working_log == arri_logc) {
+    tf = 2;
+  }
+  else if (working_log == red_log3g10) {
+    tf = 3;
+  }
+  else if (working_log == sony_slog3) {
+    tf = 4;
+  }
+  else if (working_log == filmlight_tlog) {
+    tf = 5;
+  }
+  else if (working_log == davinci_intermediate) {
+    tf = 6;
+  }
+  else if (working_log == blackmagic_film_gen5) {
+    tf = 7;
+  }
+  else if (working_log == canonlog3) {
+    tf = 8;
+  }
+  else if (working_log == arri_logc4) {
+    tf = 9;
+  }
+  else if (working_log == AgX_Log_Kraken) {
+    tf = 10;
+  }
+  else if (working_log == generic_log2) {
+    tf = 14;
+  }
+
+  //Pre calculate parameters
+
+  //SB2383 scale parameters
+  Chromaticities inset_chromaticities = InsetPrimaries(working_chromaticities,rc,gc,bc,ored,og,ob);
+  float3x3 insetmat= RGBtoRGB(inset_chromaticities, working_chromaticities);
+
+  // Calculate outsetmat based on checkbox
+  float3x3 outsetmat;
+  if (use_inverse_inset) {
+    Chromaticities outset_chromaticities = InsetPrimaries(working_chromaticities,rc,gc,bc,ored,og,ob, tinting_rotate+180, tinting_outset
+    );
+    outsetmat = inv_f33(RGBtoRGB(outset_chromaticities, working_chromaticities));
+  } else {
+    Chromaticities outset_chromaticities = InsetPrimaries(
+      working_chromaticities, r_restore, g_restore, b_restore, outset_r_rot, outset_g_rot, outset_b_rot, tinting_rotate+180, tinting_outset
+    );
+    outsetmat = inv_f33(RGBtoRGB(outset_chromaticities, working_chromaticities));
+  }
+
+
+  float mg = _powf(0.18,1/2.4);
+  float lmg = lin2log(make_float3(0.18), tf, generic_log2_min, generic_log2_max).x;
+
+  //Calculate Matrices
+
+  float3x3 in_to_working = RGBtoRGB(in_chromaticities, working_chromaticities);
+  float3x3 working_to_out = RGBtoRGB(working_chromaticities, out_chromaticities);
+
+  //Input
+
+  float3 rgb = make_float3(p_R, p_G, p_B);
+  float3 agx = rgb;
+
+  rgb = log2lin(rgb, in_tf);
+
+  rgb = mult_f3_f33(rgb, in_to_working);
+
+  // Apply luminance compensation
+  if (use_compensate_low_side) {
+     rgb = compensate_low_side(rgb, false, working_chromaticities);
+  }
+
+  //apply inset matrix
+  rgb = mult_f3_f33(rgb, insetmat);
+
+  float3 pre_hsv = RGB_to_HSV(rgb);
+  
+  float3 uniform_logfloor = log2lin(make_float3(0.0, 0.0, 0.0), tf, generic_log2_min, generic_log2_max);
+  rgb = maxf3(uniform_logfloor.x, rgb);
+  
+  rgb = lin2log(rgb, tf, generic_log2_min, generic_log2_max);
+
+  float3 log = rgb;
+
+  if (logoutput == 1)
+    rgb=agx;
+
+  rgb.x = tonescale(rgb.x, sp, tp, slope, lmg+pivot_offset, mg,1,0);
+  rgb.y = tonescale(rgb.y, sp, tp, slope, lmg+pivot_offset, mg,1,0);
+  rgb.z = tonescale(rgb.z, sp, tp, slope, lmg+pivot_offset, mg,1,0);
+  //rgb = clampf3(rgb,0,1);
+
+  float3 img = rgb;
+
+  img  = spowf3(img,2.4);
+
+  float3 post_hsv = RGB_to_HSV(img);
+  post_hsv.x = lerp_chromaticity_angle(pre_hsv.x, post_hsv.x, angle_lerp);
+  img = HSV_to_RGB(post_hsv);
+
+  img = mult_f3_f33(img, outsetmat);
+  img = mult_f3_f33(img, working_to_out);
+
+  // Apply luminance compensation
+  if (use_compensate_low_side) {
+     img = compensate_low_side(img, true, out_chromaticities);
+  }
+
+  //img = clampf3(img,0,1);
+
+  switch (logoutput) {
+    case 0:
+        img  = encode_inverse_EOTF(img, out_transfer_function);
+        img = maxf3(0.0,img);
+        //img.x = _fabs(img.x);
+        //img.y = _fabs(img.y);
+        //img.z = _fabs(img.z);
+
+        break;
+    case 1:
+        img=log;
+        break;
+  }
+
+  return img;
+}

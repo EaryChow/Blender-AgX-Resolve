@@ -94,3 +94,12 @@ This is the "Lower Guard Rail" used in Blender's AgX to handle negative values.
 
 ## Log Encoded Output
 Toggle to control whether to encode to the Working Log Encoding with Output Primaries for the output
+
+## Experimental HDR
+This is experimental only, no guarantee of final design. But testers will be appreciated.
+
+## Use HDR
+Checkbox to enable HDR-specific logic.
+
+## HDR as percentage for SDR
+In case `Use HDR` is checked with the output transfer function set to SDR ones. If checked, it outputs the image with a darkened middle grey. If not checked, it outputs the darkened-middle-grey image being scaled backup globally (which means clipping might occur). Default is checked to avoid output clipping. 

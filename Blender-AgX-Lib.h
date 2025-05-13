@@ -456,13 +456,15 @@ __DEVICE__ Chromaticities RotatePrimary(Chromaticities N,float rrot,float grot,f
   return N;
 }
 
-__DEVICE__ float2 Line_equation (float2 a,float2 b){
-  float m = (b.y-a.y)/(b.x - a.x);
-  float c = a.y - m*a.x;
-
-  float2 line = make_float2(m,c);
-
-  return line;
+__DEVICE__ float2 Line_equation(float2 a, float2 b) {
+  float dx = b.x - a.x;
+  if (fabsf(dx) < 1e-6f) {
+    // vertical line → represent as (m=∞, c = x_intercept)
+    return make_float2(1.0f/0.0f, a.x);
+  }
+  float m = (b.y - a.y) / dx;
+  float c = a.y - m * a.x;
+  return make_float2(m, c);
 }
 
 __DEVICE__ Chromaticities PrimariesLines(Chromaticities N){
@@ -485,15 +487,33 @@ __DEVICE__ Chromaticities Polygon(Chromaticities N){
   return N;
 }
 
-__DEVICE__ float2 intersection(float2 a,float2 b){
-  //Calculate the xy coordinates where 2 lines intersect
-  float2 c = a;
-  float2 d = b;
+__DEVICE__ float2 intersection(float2 l1, float2 l2) {
+  float m1 = l1.x, c1 = l1.y;
+  float m2 = l2.x, c2 = l2.y;
 
-  a.x = (d.y-c.y)/(c.x-d.x);
-  a.y = a.x*c.x+c.y;
+  bool inf1 = isfinite(m1) == false;
+  bool inf2 = isfinite(m2) == false;
 
-  return a;
+  float x, y;
+  if (inf1 && inf2) {
+    // two verticals (parallel) → just default (0,0)
+    x = y = 0.0f;
+  }
+  else if (inf1) {
+    // first is vertical: x = c1
+    x = c1;
+    y = m2 * x + c2;
+  }
+  else if (inf2) {
+    // second is vertical: x = c2
+    x = c2;
+    y = m1 * x + c1;
+  }
+  else {
+    x = (c2 - c1) / (m1 - m2);
+    y = m1 * x + c1;
+  }
+  return make_float2(x, y);
 }
 
 __DEVICE__ Chromaticities InsetPrimaries(Chromaticities N, float cpr, float cpg, float cpb, float ored, float og, float ob, float achromatic_rotate = 0, float achromatic_outset = 0) {
@@ -510,11 +530,21 @@ __DEVICE__ Chromaticities InsetPrimaries(Chromaticities N, float cpr, float cpg,
   float2 greenline = og > 0 ? M.blue : M.red;
   float2 blueline = ob > 0 ? M.green : M.blue;
 
-  // Lines from wp to scaled primaries
-  N = PrimariesLines(N);
-  N.red = intersection(N.red, redline);
-  N.green = intersection(N.green, greenline);
-  N.blue = intersection(N.blue, blueline);
+    // compute the line eqns from each rotated‐primary → whitepoint
+    float2 wp = original_N.white;
+    float2 lr = Line_equation( make_float2(N.red.x,   N.red.y),   wp );
+    float2 lg = Line_equation( make_float2(N.green.x, N.green.y), wp );
+    float2 lb = Line_equation( make_float2(N.blue.x,  N.blue.y),  wp );
+
+    // intersect each with the chosen triangle edge
+    float2 Pr = intersection(lr, redline);
+    float2 Pg = intersection(lg, greenline);
+    float2 Pb = intersection(lb, blueline);
+
+    // assign back into N
+    N.red   = Pr;
+    N.green = Pg;
+    N.blue  = Pb;
 
   cpr = 1 - cpr;
   cpg = 1 - cpg;
@@ -526,77 +556,54 @@ __DEVICE__ Chromaticities InsetPrimaries(Chromaticities N, float cpr, float cpg,
   float2 original_white = Polygon(original_N).white;
   const float arbitrary_scale = 4.0f;
 
-  // Scale Y-axis (SB2383 Python script's `scaled_achromatic`)
+  // Scale & rotate the achromatic point
   float2 scaled_achromatic = make_float2(
       original_white.x,
       original_white.y * arbitrary_scale
   );
-
-  // Rotate the scaled achromatic
   float radians = _radians(achromatic_rotate);
   float dx = scaled_achromatic.x - original_white.x;
   float dy = scaled_achromatic.y - original_white.y;
-  float rotated_dx = dx * cos(radians) - dy * sin(radians);
-  float rotated_dy = dx * sin(radians) + dy * cos(radians);
   float2 rotated_achromatic = make_float2(
-      original_white.x + rotated_dx,
-      original_white.y + rotated_dy
+      original_white.x + dx * cos(radians) - dy * sin(radians),
+      original_white.y + dx * sin(radians) + dy * cos(radians)
   );
 
-  // Create line from rotated_achromatic to original_white
-  float2 line_start = rotated_achromatic;
-  float2 line_end   = original_white;
+  // Build the infinite achromatic ray and triangle edges
+  float2 la = Line_equation(rotated_achromatic, original_white);
+  float2 e1 = Line_equation(original_N.red,   original_N.green);
+  float2 e2 = Line_equation(original_N.green, original_N.blue);
+  float2 e3 = Line_equation(original_N.blue,  original_N.red);
 
-  // Find intersection with polygon (hull point)
-  float2 hull_achromatic;
-  int intersected = 0;
+  // Find their intersections
+  float2 i1 = intersection(la, e1);
+  float2 i2 = intersection(la, e2);
+  float2 i3 = intersection(la, e3);
 
-  for (int i = 0; i < 3; i++) {
-      float2 edge_start, edge_end;
-      switch (i) {
-          case 0: edge_start = original_N.red;   edge_end = original_N.green; break;
-          case 1: edge_start = original_N.green; edge_end = original_N.blue;  break;
-          default: edge_start = original_N.blue; edge_end = original_N.red;   break;
-      }
+  // Pick the first intersect that lies on both the achromatic ray segment (t∈[0,1])
+  // and the edge segment (u∈[0,1]), else fallback to white
+  float2 hull_achromatic = original_white;
+  float2 A = rotated_achromatic, B = original_white;
+  auto on_segment = [&](float2 P, float2 C, float2 D){
+    float t = (fabs(B.x-A.x)>fabs(B.y-A.y))
+      ? (P.x-A.x)/(B.x-A.x)
+      : (P.y-A.y)/(B.y-A.y);
+    float u = (fabs(D.x-C.x)>fabs(D.y-C.y))
+      ? (P.x-C.x)/(D.x-C.x)
+      : (P.y-C.y)/(D.y-C.y);
+    return (t >= 0.0f && t <= 1.0f && u >= 0.0f && u <= 1.0f);
+  };
+  if      (on_segment(i1, original_N.red,   original_N.green)) hull_achromatic = i1;
+  else if (on_segment(i2, original_N.green, original_N.blue )) hull_achromatic = i2;
+  else if (on_segment(i3, original_N.blue,  original_N.red  )) hull_achromatic = i3;
 
-      float2 A = line_start, B = line_end;
-      float2 C = edge_start, D = edge_end;
-
-      float denominator = (A.x - B.x)*(C.y - D.y)
-                        - (A.y - B.y)*(C.x - D.x);
-      if (denominator == 0.0f) continue;  // parallel
-
-      float t = ((A.x - C.x)*(C.y - D.y)
-               - (A.y - C.y)*(C.x - D.x))
-              / denominator;
-      float u = -((A.x - B.x)*(A.y - C.y)
-                - (A.y - B.y)*(A.x - C.x))
-              / denominator;
-
-      if (t >= 0.0f && t <= 1.0f
-       && u >= 0.0f && u <= 1.0f) {
-          // exactly the same P = A + t*(B-A) that Shapely would give first
-          hull_achromatic = make_float2(
-              A.x + t * (B.x - A.x),
-              A.y + t * (B.y - A.y)
-          );
-          intersected = 1;
-          break;
-      }
-  }
-
-  if (!intersected) hull_achromatic = original_white; // Fallback
-
-  // Move whitepoint towards hull_achromatic by interpolating between the two ends of the line
-  float2 interpolation_line = make_float2(
-      original_white.x - hull_achromatic.x,
-      original_white.y - hull_achromatic.y
+  // Move whitepoint towards hull_achromatic by achromatic_outset
+  float2 interp = make_float2(
+      (original_white.x - hull_achromatic.x) * (1.0f - achromatic_outset),
+      (original_white.y - hull_achromatic.y) * (1.0f - achromatic_outset)
   );
-  interpolation_line.x *= (1.0f - achromatic_outset);
-  interpolation_line.y *= (1.0f - achromatic_outset);
-
-  N.white.x = hull_achromatic.x + interpolation_line.x;
-  N.white.y = hull_achromatic.y + interpolation_line.y;
+  N.white.x = hull_achromatic.x + interp.x;
+  N.white.y = hull_achromatic.y + interp.y;
 
   return N;
 }

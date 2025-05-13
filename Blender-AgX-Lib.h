@@ -498,9 +498,11 @@ __DEVICE__ float2 intersection(float2 a,float2 b){
 
 __DEVICE__ Chromaticities InsetPrimaries(Chromaticities N, float cpr, float cpg, float cpb, float ored, float og, float ob, float achromatic_rotate = 0, float achromatic_outset = 0) {
   Chromaticities M = N;
-  N = ScalePrim(N, 4.0, 4.0, 4.0);
 
-  N = RotatePrimary(N, ored, og, ob);
+  Chromaticities original_N = N;
+  Chromaticities scaled_N = ScalePrim(N, 4.0, 4.0, 4.0);
+
+  N = RotatePrimary(scaled_N, ored, og, ob);
 
   M = Polygon(M);
 
@@ -521,7 +523,7 @@ __DEVICE__ Chromaticities InsetPrimaries(Chromaticities N, float cpr, float cpg,
   N = ScalePrim(N, cpr, cpg, cpb);
 
   // --- Start of Achromatic Tinting ---
-  float2 original_white = M.white;
+  float2 original_white = Polygon(original_N).white;
   const float arbitrary_scale = 4.0f;
 
   // Scale Y-axis (SB2383 Python script's `scaled_achromatic`)
@@ -536,39 +538,48 @@ __DEVICE__ Chromaticities InsetPrimaries(Chromaticities N, float cpr, float cpg,
   float dy = scaled_achromatic.y - original_white.y;
   float rotated_dx = dx * cos(radians) - dy * sin(radians);
   float rotated_dy = dx * sin(radians) + dy * cos(radians);
-  float2 rotated_point = make_float2(
+  float2 rotated_achromatic = make_float2(
       original_white.x + rotated_dx,
       original_white.y + rotated_dy
   );
 
-  // Create line from original_white to rotated_point
-  float2 line_start = original_white;
-  float2 line_end = rotated_point;
+  // Create line from rotated_achromatic to original_white
+  float2 line_start = rotated_achromatic;
+  float2 line_end   = original_white;
 
   // Find intersection with polygon (hull point)
   float2 hull_achromatic;
-  // Iterate through polygon edges (N.red, N.green, N.blue) to find intersection
   int intersected = 0;
+
   for (int i = 0; i < 3; i++) {
       float2 edge_start, edge_end;
       switch (i) {
-          case 0: edge_start = N.red; edge_end = N.green; break;
-          case 1: edge_start = N.green; edge_end = N.blue; break;
-          case 2: edge_start = N.blue; edge_end = N.red; break;
+          case 0: edge_start = original_N.red;   edge_end = original_N.green; break;
+          case 1: edge_start = original_N.green; edge_end = original_N.blue;  break;
+          default: edge_start = original_N.blue; edge_end = original_N.red;   break;
       }
 
-      // Line-line intersection algorithm
       float2 A = line_start, B = line_end;
       float2 C = edge_start, D = edge_end;
 
-      float denominator = (A.x - B.x) * (C.y - D.y) - (A.y - B.y) * (C.x - D.x);
-      if (denominator == 0.0f) continue; // Parallel lines
+      float denominator = (A.x - B.x)*(C.y - D.y)
+                        - (A.y - B.y)*(C.x - D.x);
+      if (denominator == 0.0f) continue;  // parallel
 
-      float t = ((A.x - C.x) * (C.y - D.y) - (A.y - C.y) * (C.x - D.x)) / denominator;
-      float u = -((A.x - B.x) * (A.y - C.y) - (A.y - B.y) * (A.x - C.x)) / denominator;
+      float t = ((A.x - C.x)*(C.y - D.y)
+               - (A.y - C.y)*(C.x - D.x))
+              / denominator;
+      float u = -((A.x - B.x)*(A.y - C.y)
+                - (A.y - B.y)*(A.x - C.x))
+              / denominator;
 
-      if (t >= 0.0f && t <= 1.0f && u >= 0.0f && u <= 1.0f) {
-          hull_achromatic = make_float2(A.x + t * (B.x - A.x), A.y + t * (B.y - A.y));
+      if (t >= 0.0f && t <= 1.0f
+       && u >= 0.0f && u <= 1.0f) {
+          // exactly the same P = A + t*(B-A) that Shapely would give first
+          hull_achromatic = make_float2(
+              A.x + t * (B.x - A.x),
+              A.y + t * (B.y - A.y)
+          );
           intersected = 1;
           break;
       }
@@ -576,17 +587,16 @@ __DEVICE__ Chromaticities InsetPrimaries(Chromaticities N, float cpr, float cpg,
 
   if (!intersected) hull_achromatic = original_white; // Fallback
 
-  // Move whitepoint towards hull_achromatic
-  // The end interpolation flips the movement direction, hence in the end it's moving from original white to hull
-  float2 direction = make_float2(
+  // Move whitepoint towards hull_achromatic by interpolating between the two ends of the line
+  float2 interpolation_line = make_float2(
       original_white.x - hull_achromatic.x,
       original_white.y - hull_achromatic.y
   );
-  direction.x *= (1.0f - achromatic_outset);
-  direction.y *= (1.0f - achromatic_outset);
+  interpolation_line.x *= (1.0f - achromatic_outset);
+  interpolation_line.y *= (1.0f - achromatic_outset);
 
-  N.white.x = hull_achromatic.x + direction.x;
-  N.white.y = hull_achromatic.y + direction.y;
+  N.white.x = hull_achromatic.x + interpolation_line.x;
+  N.white.y = hull_achromatic.y + interpolation_line.y;
 
   return N;
 }

@@ -530,21 +530,21 @@ __DEVICE__ Chromaticities InsetPrimaries(Chromaticities N, float cpr, float cpg,
   float2 greenline = og > 0 ? M.blue : M.red;
   float2 blueline = ob > 0 ? M.green : M.blue;
 
-    // compute the line eqns from each rotated‐primary → whitepoint
-    float2 wp = original_N.white;
-    float2 lr = Line_equation( make_float2(N.red.x,   N.red.y),   wp );
-    float2 lg = Line_equation( make_float2(N.green.x, N.green.y), wp );
-    float2 lb = Line_equation( make_float2(N.blue.x,  N.blue.y),  wp );
+  // compute the line eqns from each rotated‐primary → whitepoint
+  float2 wp = original_N.white;
+  float2 lr = Line_equation( make_float2(N.red.x,   N.red.y),   wp );
+  float2 lg = Line_equation( make_float2(N.green.x, N.green.y), wp );
+  float2 lb = Line_equation( make_float2(N.blue.x,  N.blue.y),  wp );
 
-    // intersect each with the chosen triangle edge
-    float2 Pr = intersection(lr, redline);
-    float2 Pg = intersection(lg, greenline);
-    float2 Pb = intersection(lb, blueline);
+  // intersect each with the chosen triangle edge
+  float2 Pr = intersection(lr, redline);
+  float2 Pg = intersection(lg, greenline);
+  float2 Pb = intersection(lb, blueline);
 
-    // assign back into N
-    N.red   = Pr;
-    N.green = Pg;
-    N.blue  = Pb;
+  // assign back into N
+  N.red   = Pr;
+  N.green = Pg;
+  N.blue  = Pb;
 
   cpr = 1 - cpr;
   cpg = 1 - cpg;

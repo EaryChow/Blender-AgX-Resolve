@@ -354,27 +354,6 @@ __DEVICE__ float3x3 Insetcalcmatrix(Chromaticities N,float cpr,float cpg,float c
   return RGBtoAdj;
 }
 
-__DEVICE__ Chromaticities RotatePrimaries(Chromaticities N,float ored,float og,float ob)
-{
-  ored = _radians(ored);
-  og =_radians(og);
-  ob = _radians(ob);
-  float2 Cred= make_float2(N.red.x-N.white.x,N.red.y-N.white.y);
-  float2 Cgreen = make_float2(N.green.x-N.white.x,N.green.y-N.white.y);
-  float2 Cblue = make_float2(N.blue.x-N.white.x,N.blue.y-N.white.y);
-  float3 l = make_float3(_hypotf(Cred.x,Cred.y),_hypotf(Cgreen.x,Cgreen.y),_hypotf(Cblue.x,Cblue.y));
-  float3 hue = make_float3( _atan2f(Cred.y,Cred.x), _atan2f(Cgreen.y,Cgreen.x), _atan2f(Cblue.y,Cblue.x));
-  Chromaticities Nout = make_chromaticities(make_float2(l.x*_cosf(hue.x+ored),l.x*_sinf(hue.x+ored)),make_float2(l.x*_cosf(hue.y+og),l.x*_sinf(hue.y+og)),make_float2(l.x*_cosf(hue.z+ob),l.x*_sinf(hue.z+ob)),N.white);
-  Nout.red.x= Nout.red.x+N.white.x;
-  Nout.red.y=Nout.red.y+N.white.y;
-  Nout.green.x=Nout.green.x+N.white.x;
-  Nout.green.y=Nout.green.y+N.white.y;
-  Nout.blue.x=Nout.blue.x+N.white.x;
-  Nout.blue.y=Nout.blue.y+N.white.y;
-
-  return Nout;
-}
-
 __DEVICE__ Chromaticities Primaries2Moment(Chromaticities N){
   float2 momr = make_float2((N.red.x-N.white.x)/N.red.y,(N.red.y-N.white.y)/N.red.y);
   float2 momg = make_float2((N.green.x-N.white.x)/N.green.y,(N.green.y-N.white.y)/N.green.y);
@@ -616,14 +595,6 @@ __DEVICE__ float3x3 RGBtoRGB(Chromaticities N,Chromaticities M){
   float3x3 rgbtorgb = mult_f33_f33(In2XYZ,XYZ2Out);
 
   return rgbtorgb;
-}
-
-__DEVICE__ float3x3 InsetMatrix(Chromaticities N,float cpr,float cpg,float cpb,float oRed,float og,float ob){
-  Chromaticities In = Insetcalc(N,cpr,cpg,cpb);
-  In=RotatePrimaries(In,oRed,og,ob);
-  float3x3 Matrix = RGBtoRGB(N,In);
-
-  return Matrix;
 }
 
 __DEVICE__ float3 XYZ_2_xyY( float3 XYZ) {
@@ -965,7 +936,7 @@ __DEVICE__ float3 log2lin(float3 rgb, int tf, float generic_log2_min_expo = -10,
 }
 
 //Based on Jed Smith Sigmoid
-__DEVICE__ float tonescale(float in, float sp, float tp, float Pslope, float px, float py,float s0,float t0)
+__DEVICE__ float tonescale(float in, float sp, float tp, float Pslope, float px, float py,float s0=1.0,float t0=0.0)
 {
   //calculate Shoulder
   //float s0= 1.0;

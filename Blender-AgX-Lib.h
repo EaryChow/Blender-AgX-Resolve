@@ -435,15 +435,17 @@ __DEVICE__ Chromaticities RotatePrimary(Chromaticities N,float rrot,float grot,f
   return N;
 }
 
-__DEVICE__ float2 Line_equation(float2 a, float2 b) {
-  float dx = b.x - a.x;
-  if (fabsf(dx) < 1e-6f) {
-    // vertical line → represent as (m=∞, c = x_intercept)
-    return make_float2(1.0f/0.0f, a.x);
-  }
-  float m = (b.y - a.y) / dx;
-  float c = a.y - m * a.x;
-  return make_float2(m, c);
+__DEVICE__ float2 Line_equation(float2 a, float2 b)
+{
+    float dx = b.x - a.x;
+    if (fabsf(dx) < 1e-6f) {
+        /* vertical line → slope = +∞, intercept = x */
+        const float kInf = 1e30f * 1e30f;
+        return make_float2(kInf, a.x);
+    }
+    float m = (b.y - a.y) / dx;
+    float c = a.y - m * a.x;
+    return make_float2(m, c);
 }
 
 __DEVICE__ Chromaticities PrimariesLines(Chromaticities N){

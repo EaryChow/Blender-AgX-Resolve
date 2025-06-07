@@ -542,12 +542,12 @@ __DEVICE__ Chromaticities InsetPrimaries(Chromaticities N, float cpr, float cpg,
       original_white.x,
       original_white.y * arbitrary_scale
   );
-  float radians = _radians(achromatic_rotate);
+  float achromatic_rotate_radians = _radians(achromatic_rotate);
   float dx = scaled_achromatic.x - original_white.x;
   float dy = scaled_achromatic.y - original_white.y;
   float2 rotated_achromatic = make_float2(
-      original_white.x + dx * cos(radians) - dy * sin(radians),
-      original_white.y + dx * sin(radians) + dy * cos(radians)
+      original_white.x + dx * cos(achromatic_rotate_radians) - dy * sin(achromatic_rotate_radians),
+      original_white.y + dx * sin(achromatic_rotate_radians) + dy * cos(achromatic_rotate_radians)
   );
 
   // Build the infinite achromatic ray and triangle edges

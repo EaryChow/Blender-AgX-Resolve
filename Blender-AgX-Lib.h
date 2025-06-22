@@ -624,7 +624,7 @@ __DEVICE__ float3 xyY_2_XYZ( float3 xyY) {
 // Blender-AgX's Compensate Low side
 __DEVICE__ float3 compensate_low_side(float3 rgb, int use_hacky_lerp, Chromaticities working_chrom) {
     // Hardcoded Rec.2020 luminance coefficients (2015 CMFs)
-    const float3 luminance_coeffs = make_float3(0.265818f, 0.59846986f, 0.1357121f);
+    const float3 luminance_coeffs = make_float3(0.2589235355689848f, 0.6104985346066525f, 0.13057792982436284f);
     Chromaticities rec2020 = REC2020_PRI;
 
     // Convert RGB to Rec.2020 for luminance calculation

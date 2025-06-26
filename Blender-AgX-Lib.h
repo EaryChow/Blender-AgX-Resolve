@@ -622,7 +622,7 @@ __DEVICE__ float3 xyY_2_XYZ( float3 xyY) {
 }
 
 // Blender-AgX's Compensate Low side
-__DEVICE__ float3 compensate_low_side(float3 rgb, int use_hacky_lerp, Chromaticities working_chrom) {
+__DEVICE__ float3 compensate_low_side(float3 rgb, int use_heuristic_lerp, Chromaticities working_chrom) {
     // Hardcoded Rec.2020 luminance coefficients (2015 CMFs)
     const float3 luminance_coeffs = make_float3(0.2589235355689848f, 0.6104985346066525f, 0.13057792982436284f);
     Chromaticities rec2020 = REC2020_PRI;
@@ -651,7 +651,7 @@ __DEVICE__ float3 compensate_low_side(float3 rgb, int use_hacky_lerp, Chromatici
 
     // Calculate compensation values
     float y_compensate = (max_inv_rgb - Y_inverse + Y);
-    if (use_hacky_lerp) {
+    if (use_heuristic_lerp) {
         float Y_clipped = _clampf(powf(Y, 0.08f), 0.0f, 1.0f);
         y_compensate = y_compensate + Y_clipped * (Y - y_compensate);
     }
@@ -684,7 +684,7 @@ __DEVICE__ float3 compensate_low_side(float3 rgb, int use_hacky_lerp, Chromatici
                              inverse_offset_rec2020.z * luminance_coeffs.z;
 
     float Y_new_compensate = (max_inv_offset - Y_inverse_offset + Y_new);
-    if (use_hacky_lerp) {
+    if (use_heuristic_lerp) {
         float Y_new_clipped = _clampf(powf(Y_new, 0.08f), 0.0f, 1.0f);
         Y_new_compensate = Y_new_compensate + Y_new_clipped * (Y_new - Y_new_compensate);
     }

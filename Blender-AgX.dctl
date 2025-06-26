@@ -19,7 +19,8 @@ DEFINE_UI_PARAMS(working_gamut, Working Primaries, DCTLUI_COMBO_BOX, 4, {working
 DEFINE_UI_PARAMS(in_transfer, Input Transfer Characteristic Encoding, DCTLUI_COMBO_BOX, 0, {in_linear, in_acescct, in_arri_logc, in_arri_logc4, in_red_log3g10, in_sony_slog3, in_blackmagic_film_gen5, in_canonlog3, in_davinci_intermediate, in_filmlight_tlog, in_AgX_Log_Kraken, in_AgX_Log_Blender}, {Linear, ACEScct, Arri V3LogC,Arri LogCV4, Red Log3G10, Sony SLog3, Blackmagic Film Gen5, Canon Log3, DaVinci Intermediate,Filmlight TLog, AgX Log Kraken, AgX Log Blender})
 DEFINE_UI_PARAMS(working_log, Working Log Encoding, DCTLUI_COMBO_BOX, 11, {linear, acescct, arri_logc,arri_logc4, red_log3g10, sony_slog3, blackmagic_film_gen5, canonlog3, davinci_intermediate,filmlight_tlog,AgX_Log_Kraken, generic_log2}, {Linear, ACEScct, Arri V3LogC,Arri LogCV4, Red Log3G10, Sony SLog3, Blackmagic Film Gen5, Canon Log3, DaVinci Intermediate,Filmlight TLog, AgX Log Kraken, Generic Log2})
 DEFINE_UI_PARAMS(generic_log2_min, Log2 Min Stop, DCTLUI_SLIDER_FLOAT, -10, -15, -5, 0.1)
-DEFINE_UI_PARAMS(generic_log2_max, Log2 Max Stop, DCTLUI_SLIDER_FLOAT, 6.5, 2.8, 38, 0.1)
+DEFINE_UI_PARAMS(generic_log2_max, Log2 Max Stop, DCTLUI_SLIDER_FLOAT, 6.5, 4.0, 15, 0.1)
+DEFINE_UI_PARAMS(log2_maintain_contrast, Maintain General Contrast, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(pivot_offset, Contrast Pivot Offset, DCTLUI_SLIDER_FLOAT, 0, -0.3, 0.18, 0.01)
 DEFINE_UI_PARAMS(out_gamut, Output Primaries, DCTLUI_COMBO_BOX, 5, {outap0, outap1, outp3d65, outp3d60, outrec2020, outrec709, outawg3, outawg4, outrwg, outsgamut3, outsgamut3cine, outblackmagicwg, outcanoncinema, outdavinciwg, outegamut}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
 DEFINE_UI_PARAMS(out_transfer, Output Transfer, DCTLUI_COMBO_BOX, 1, {out_linear, out_sRGB_inverse_EOTF, out_BT1886_inverse_EOTF}, { Linear, sRGB Inverse EOTF 2.2, BT.1886 Inverse EOTF 2.4})
@@ -366,9 +367,14 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
   if (logoutput == 1)
     rgb=agx;
 
-  rgb.x = tonescale(rgb.x, sp, tp, slope, lmg+pivot_offset, mg,1,0);
-  rgb.y = tonescale(rgb.y, sp, tp, slope, lmg+pivot_offset, mg,1,0);
-  rgb.z = tonescale(rgb.z, sp, tp, slope, lmg+pivot_offset, mg,1,0);
+  if (log2_maintain_contrast == 1 && working_log == generic_log2) {
+    float default_exposure_range = 16.5f;
+    slope = ((fabsf(generic_log2_min) + generic_log2_max) / default_exposure_range) * slope;
+  }
+
+  rgb.x = tonescale(rgb.x, sp, tp, slope, lmg+pivot_offset, mg);
+  rgb.y = tonescale(rgb.y, sp, tp, slope, lmg+pivot_offset, mg);
+  rgb.z = tonescale(rgb.z, sp, tp, slope, lmg+pivot_offset, mg);
   //rgb = clampf3(rgb,0,1);
 
   float3 img = rgb;

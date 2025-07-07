@@ -368,8 +368,8 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     rgb=agx;
 
   if (log2_maintain_contrast == 1 && working_log == generic_log2) {
-    float default_exposure_range = 16.5f;
-    slope = ((fabsf(generic_log2_min) + generic_log2_max) / default_exposure_range) * slope;
+    float base_exposure_range = 16.5f;
+    slope = ((fabsf(generic_log2_min) + generic_log2_max) / base_exposure_range) * slope;
   }
 
   rgb.x = tonescale(rgb.x, sp, tp, slope, lmg+pivot_offset, mg);

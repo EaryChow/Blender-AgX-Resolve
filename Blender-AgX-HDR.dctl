@@ -402,6 +402,11 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     img.x = tonescale(img.x, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
     img.y = tonescale(img.y, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
     img.z = tonescale(img.z, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
+
+    img.x = (img.x - hdr_mg_darkened) < 0? img.x : _powf(img.x - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(0.91f))) + hdr_mg_darkened;
+    img.y = (img.y - hdr_mg_darkened) < 0? img.y : _powf(img.y - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(0.91f))) + hdr_mg_darkened;
+    img.z = (img.z - hdr_mg_darkened) < 0? img.z : _powf(img.z - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(0.91f))) + hdr_mg_darkened;
+
     img = log2lin(img, 14, -20.0, 2.47393118833);
   }
 

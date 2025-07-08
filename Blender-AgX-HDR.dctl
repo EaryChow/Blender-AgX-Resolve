@@ -399,9 +399,9 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     float hdr_mg_pre_darken = lin2log(make_float3(0.18), 14, -20.0, 2.47393118833).x;
     float hdr_mg_darkened =  lin2log(make_float3(0.18/hdr_sdr_ratio), 14, -20.0, 2.47393118833).x;
     // slope set to 1.000001 instead of 1.0 to prevent the curve from breaking when hdr_peak == sdr_peak
-    img.x = tonescale(img.x, 1, 1, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
-    img.y = tonescale(img.y, 1, 1, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
-    img.z = tonescale(img.z, 1, 1, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
+    img.x = tonescale(img.x, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
+    img.y = tonescale(img.y, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
+    img.z = tonescale(img.z, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
     img = log2lin(img, 14, -20.0, 2.47393118833);
   }
 

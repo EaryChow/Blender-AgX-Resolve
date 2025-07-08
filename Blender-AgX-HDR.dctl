@@ -19,7 +19,7 @@ DEFINE_UI_PARAMS(working_gamut, Working Primaries, DCTLUI_COMBO_BOX, 4, {working
 DEFINE_UI_PARAMS(in_transfer, Input Transfer Characteristic Encoding, DCTLUI_COMBO_BOX, 0, {in_linear, in_acescct, in_arri_logc, in_arri_logc4, in_red_log3g10, in_sony_slog3, in_blackmagic_film_gen5, in_canonlog3, in_davinci_intermediate, in_filmlight_tlog, in_AgX_Log_Kraken, in_AgX_Log_Blender}, {Linear, ACEScct, Arri V3LogC,Arri LogCV4, Red Log3G10, Sony SLog3, Blackmagic Film Gen5, Canon Log3, DaVinci Intermediate,Filmlight TLog, AgX Log Kraken, AgX Log Blender})
 DEFINE_UI_PARAMS(working_log, Working Log Encoding, DCTLUI_COMBO_BOX, 11, {linear, acescct, arri_logc,arri_logc4, red_log3g10, sony_slog3, blackmagic_film_gen5, canonlog3, davinci_intermediate,filmlight_tlog,AgX_Log_Kraken, generic_log2}, {Linear, ACEScct, Arri V3LogC,Arri LogCV4, Red Log3G10, Sony SLog3, Blackmagic Film Gen5, Canon Log3, DaVinci Intermediate,Filmlight TLog, AgX Log Kraken, Generic Log2})
 DEFINE_UI_PARAMS(generic_log2_min, Log2 Min Stop, DCTLUI_SLIDER_FLOAT, -10, -15, -5, 0.1)
-DEFINE_UI_PARAMS(generic_log2_max, Log2 Max Stop, DCTLUI_SLIDER_FLOAT, 6.5, 4.0, 15, 0.1)
+DEFINE_UI_PARAMS(generic_log2_max, Log2 Max Stop, DCTLUI_SLIDER_FLOAT, 10, 4.0, 15, 0.1)
 DEFINE_UI_PARAMS(log2_maintain_contrast, Maintain General Contrast, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(pivot_offset, Contrast Pivot Offset, DCTLUI_SLIDER_FLOAT, 0, -0.3, 0.18, 0.01)
 DEFINE_UI_PARAMS(out_gamut, Output Primaries, DCTLUI_COMBO_BOX, 5, {outap0, outap1, outp3d65, outp3d60, outrec2020, outrec709, outawg3, outawg4, outrwg, outsgamut3, outsgamut3cine, outblackmagicwg, outcanoncinema, outdavinciwg, outegamut}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
@@ -32,7 +32,7 @@ DEFINE_UI_PARAMS(use_compensate_low_side, Compensate for the Negatives, DCTLUI_C
 DEFINE_UI_PARAMS(use_hdr, Use HDR, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(hdr_peak, HDR Peak Nits, DCTLUI_SLIDER_FLOAT, 1000, 400, 1000, 1)
 DEFINE_UI_PARAMS(sdr_peak, SDR Peak Nits, DCTLUI_SLIDER_FLOAT, 203, 100, 400, 1)
-DEFINE_UI_PARAMS(hdr_extra_inset, HDR Extra Attenuation, DCTLUI_SLIDER_FLOAT, 0.30, 0, 0.39, 0.001)
+DEFINE_UI_PARAMS(hdr_extra_inset, HDR Extra Attenuation, DCTLUI_SLIDER_FLOAT, 0.30, 0, 0.30, 0.001)
 DEFINE_UI_PARAMS(use_hdr_as_percent_for_sdr, HDR as percentage for SDR, DCTLUI_CHECK_BOX, 1)
 
 #include "Blender-AgX-Lib.h"
@@ -314,7 +314,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
   //Pre calculate parameters
   float hdr_extra_inset_value;
   if (use_hdr == 1 && logoutput == 0) {
-    hdr_extra_inset_value = log10(hdr_sdr_ratio) * hdr_extra_inset;
+    hdr_extra_inset_value = _fminf(log10(hdr_sdr_ratio) * hdr_extra_inset, 0.3f);
   }
   else {
     hdr_extra_inset_value = 0.0f;
@@ -420,6 +420,8 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
      img = maxf3(0, img);
   }
 
+  img = clampf3(img,0,1);
+
   // prepare image for HDR encodings with SDR peak nits normalization
   if (use_hdr == 1 && out_transfer == out_BT2100HLG_inverse_EOTF) {
     img *= hdr_sdr_ratio;
@@ -431,7 +433,6 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     img *= hdr_sdr_ratio;
   }
 
-  //img = clampf3(img,0,1);
 
   switch (logoutput) {
     case 0:
@@ -454,7 +455,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 
           break;}
     case 1:
-        img=log;
+        img=clampf3(log, 0, 1);
         break;
   }
 

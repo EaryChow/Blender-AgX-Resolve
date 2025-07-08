@@ -32,7 +32,7 @@ DEFINE_UI_PARAMS(use_compensate_low_side, Compensate for the Negatives, DCTLUI_C
 DEFINE_UI_PARAMS(use_hdr, Use HDR, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(hdr_peak, HDR Peak Nits, DCTLUI_SLIDER_FLOAT, 1000, 400, 1000, 1)
 DEFINE_UI_PARAMS(sdr_peak, SDR Peak Nits, DCTLUI_SLIDER_FLOAT, 203, 100, 400, 1)
-DEFINE_UI_PARAMS(hdr_extra_inset, HDR Extra Attenuation, DCTLUI_SLIDER_FLOAT, 0.30, 0, 0.30, 0.001)
+DEFINE_UI_PARAMS(hdr_purity, HDR Purity, DCTLUI_SLIDER_FLOAT, 0.50, 0, 1.0, 0.001)
 DEFINE_UI_PARAMS(use_hdr_as_percent_for_sdr, HDR as percentage for SDR, DCTLUI_CHECK_BOX, 1)
 
 #include "Blender-AgX-Lib.h"
@@ -312,27 +312,20 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
   }
 
   //Pre calculate parameters
-  float hdr_extra_inset_value;
-  if (use_hdr == 1 && logoutput == 0) {
-    hdr_extra_inset_value = _fminf(log10(hdr_sdr_ratio) * hdr_extra_inset, 0.3f);
-  }
-  else {
-    hdr_extra_inset_value = 0.0f;
-  }
 
   //SB2383 scale parameters
-  Chromaticities inset_chromaticities = InsetPrimaries(working_chromaticities,rc+hdr_extra_inset_value,gc+hdr_extra_inset_value,bc+hdr_extra_inset_value,ored,og,ob);
+  Chromaticities inset_chromaticities = InsetPrimaries(working_chromaticities,rc,gc,bc,ored,og,ob);
   float3x3 insetmat= RGBtoRGB(inset_chromaticities, working_chromaticities);
 
   // Calculate outsetmat based on checkbox
   float3x3 outsetmat;
   if (use_inverse_inset) {
-    Chromaticities outset_chromaticities = InsetPrimaries(working_chromaticities,rc+hdr_extra_inset_value,gc+hdr_extra_inset_value,bc+hdr_extra_inset_value,ored,og,ob, tinting_rotate+180, tinting_outset
+    Chromaticities outset_chromaticities = InsetPrimaries(working_chromaticities,rc,gc,bc,ored,og,ob, tinting_rotate+180, tinting_outset
     );
     outsetmat = inv_f33(RGBtoRGB(outset_chromaticities, working_chromaticities));
   } else {
     Chromaticities outset_chromaticities = InsetPrimaries(
-      working_chromaticities, r_restore+hdr_extra_inset_value, g_restore+hdr_extra_inset_value, b_restore+hdr_extra_inset_value, outset_r_rot, outset_g_rot, outset_b_rot, tinting_rotate+180, tinting_outset
+      working_chromaticities, r_restore, g_restore, b_restore, outset_r_rot, outset_g_rot, outset_b_rot, tinting_rotate+180, tinting_outset
     );
     outsetmat = inv_f33(RGBtoRGB(outset_chromaticities, working_chromaticities));
   }
@@ -395,6 +388,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 
   // HDR darken middle grey
   if (use_hdr) {
+    float3 pre_darken_hsv = RGB_to_HSV(img);
     img = lin2log(img, 14, -20.0, 2.47393118833);
     float hdr_mg_pre_darken = lin2log(make_float3(0.18), 14, -20.0, 2.47393118833).x;
     float hdr_mg_darkened =  lin2log(make_float3(0.18/hdr_sdr_ratio), 14, -20.0, 2.47393118833).x;
@@ -408,6 +402,9 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     img.z = (img.z - hdr_mg_darkened) < 0? img.z : _powf(img.z - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(0.91f))) + hdr_mg_darkened;
 
     img = log2lin(img, 14, -20.0, 2.47393118833);
+    float3 post_darken_hsv = RGB_to_HSV(img);
+    post_darken_hsv.y = lerp(pre_darken_hsv.y, post_darken_hsv.y, hdr_purity);
+    img = HSV_to_RGB(post_darken_hsv);
   }
 
   float3 post_hsv = RGB_to_HSV(img);

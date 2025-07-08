@@ -396,7 +396,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
      img = maxf3(0, img);
   }
 
-  //img = clampf3(img,0,1);
+  img = clampf3(img,0,1);
 
   switch (logoutput) {
     case 0:
@@ -408,7 +408,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 
         break;
     case 1:
-        img=log;
+        img=clampf3(log, 0, 1);
         break;
   }
 

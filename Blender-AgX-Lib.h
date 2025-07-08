@@ -829,7 +829,6 @@ __DEVICE__ float3 lin2log(float3 rgb, int tf, float generic_log2_min_expo = -10,
     rgb.z = rgb.z>=cut1?(c * _log10f(a * rgb.z + b) + d):(e * rgb.z + f);
   } else if (tf == 14) { // User Controlled Generic Log2 Curve
     rgb = _log2f3(rgb / 0.18f);
-    rgb = clampf3(rgb, generic_log2_min_expo, generic_log2_max_expo);
 
     rgb = (rgb + _fabs(generic_log2_min_expo)) / (fabs(generic_log2_min_expo)+fabs(generic_log2_max_expo));
   }

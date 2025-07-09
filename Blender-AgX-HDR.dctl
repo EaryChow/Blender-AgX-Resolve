@@ -403,6 +403,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 
     img = log2lin(img, 14, -20.0, 2.47393118833);
     float3 post_darken_hsv = RGB_to_HSV(img);
+    post_darken_hsv.x = lerp_chromaticity_angle(pre_darken_hsv.x, post_darken_hsv.x, hdr_purity);
     post_darken_hsv.y = lerp(pre_darken_hsv.y, post_darken_hsv.y, hdr_purity);
     img = HSV_to_RGB(post_darken_hsv);
   }

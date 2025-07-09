@@ -32,7 +32,8 @@ DEFINE_UI_PARAMS(use_compensate_low_side, Compensate for the Negatives, DCTLUI_C
 DEFINE_UI_PARAMS(use_hdr, Use HDR, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(hdr_peak, HDR Peak Nits, DCTLUI_SLIDER_FLOAT, 1000, 400, 1000, 1)
 DEFINE_UI_PARAMS(sdr_peak, SDR Peak Nits, DCTLUI_SLIDER_FLOAT, 203, 100, 400, 1)
-DEFINE_UI_PARAMS(hdr_purity, HDR Purity, DCTLUI_SLIDER_FLOAT, 0.50, 0, 1.0, 0.001)
+DEFINE_UI_PARAMS(hdr_purity, HDR Purity, DCTLUI_SLIDER_FLOAT, 0.60, 0, 1.0, 0.001)
+DEFINE_UI_PARAMS(hdr_shoulder_power, HDR Shoulder Power, DCTLUI_SLIDER_FLOAT, 0.91, 0.8, 1.0, 0.001)
 DEFINE_UI_PARAMS(use_hdr_as_percent_for_sdr, HDR as percentage for SDR, DCTLUI_CHECK_BOX, 1)
 
 #include "Blender-AgX-Lib.h"
@@ -397,9 +398,9 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     img.y = tonescale(img.y, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
     img.z = tonescale(img.z, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
 
-    img.x = (img.x - hdr_mg_darkened) < 0? img.x : _powf(img.x - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(0.91f))) + hdr_mg_darkened;
-    img.y = (img.y - hdr_mg_darkened) < 0? img.y : _powf(img.y - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(0.91f))) + hdr_mg_darkened;
-    img.z = (img.z - hdr_mg_darkened) < 0? img.z : _powf(img.z - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(0.91f))) + hdr_mg_darkened;
+    img.x = (img.x - hdr_mg_darkened) < 0? img.x : _powf(img.x - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(hdr_shoulder_power))) + hdr_mg_darkened;
+    img.y = (img.y - hdr_mg_darkened) < 0? img.y : _powf(img.y - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(hdr_shoulder_power))) + hdr_mg_darkened;
+    img.z = (img.z - hdr_mg_darkened) < 0? img.z : _powf(img.z - hdr_mg_darkened, _powf(hdr_sdr_ratio, _log10f(hdr_shoulder_power))) + hdr_mg_darkened;
 
     img = log2lin(img, 14, -20.0, 2.47393118833);
     float3 post_darken_hsv = RGB_to_HSV(img);

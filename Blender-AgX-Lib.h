@@ -750,94 +750,6 @@ __DEVICE__ float3 encode_inverse_EOTF(float3 rgb, float EOTF) {
   return rgb;
 }
 
-__DEVICE__ float3 lin2log(float3 rgb, int tf, float generic_log2_min_expo = -10, float generic_log2_max_expo = 6.5) {
-  if (tf == 0) return rgb;
-  else if (tf == 1) { // ACEScct
-    rgb.x = rgb.x > 0.0078125f ? (_log2f(rgb.x) + 9.72f) / 17.52f : 10.5402377416545f * rgb.x + 0.0729055341958355f;
-    rgb.y = rgb.y > 0.0078125f ? (_log2f(rgb.y) + 9.72f) / 17.52f : 10.5402377416545f * rgb.y + 0.0729055341958355f;
-    rgb.z = rgb.z > 0.0078125f ? (_log2f(rgb.z) + 9.72f) / 17.52f : 10.5402377416545f * rgb.z + 0.0729055341958355f;
-  } else if (tf == 2) { // Arri V3 LogC EI 800
-    rgb.x = rgb.x > 0.010591f ? 0.24719f * _log10f(5.555556f * rgb.x + 0.052272f) + 0.385537f : 5.367655f * rgb.x + 0.092809f;
-    rgb.y = rgb.y > 0.010591f ? 0.24719f * _log10f(5.555556f * rgb.y + 0.052272f) + 0.385537f : 5.367655f * rgb.y + 0.092809f;
-    rgb.z = rgb.z > 0.010591f ? 0.24719f * _log10f(5.555556f * rgb.z + 0.052272f) + 0.385537f : 5.367655f * rgb.z + 0.092809f;
-  } else if (tf == 3) { // Red Log3G10
-    rgb.x = rgb.x > -0.01f ? 0.224282f * _log10f(((rgb.x + 0.01f) * 155.975327f) + 1.0f) : (rgb.x + 0.01f) * 15.1927f;
-    rgb.y = rgb.y > -0.01f ? 0.224282f * _log10f(((rgb.y + 0.01f) * 155.975327f) + 1.0f) : (rgb.y + 0.01f) * 15.1927f;
-    rgb.z = rgb.z > -0.01f ? 0.224282f * _log10f(((rgb.z + 0.01f) * 155.975327f) + 1.0f) : (rgb.z + 0.01f) * 15.1927f;
-  } else if (tf == 4) { // Sony SLog3
-    rgb.x = rgb.x >= 0.01125f ? (420.0f + _log10f((rgb.x + 0.01f) / (0.18f + 0.01f)) * 261.5f) / 1023.0f : (rgb.x * (171.2102946929f - 95.0f) / 0.01125000f + 95.0f) / 1023.0f;
-    rgb.y = rgb.y >= 0.01125f ? (420.0f + _log10f((rgb.y + 0.01f) / (0.18f + 0.01f)) * 261.5f) / 1023.0f : (rgb.y * (171.2102946929f - 95.0f) / 0.01125000f + 95.0f) / 1023.0f;
-    rgb.z = rgb.z >= 0.01125f ? (420.0f + _log10f((rgb.z + 0.01f) / (0.18f + 0.01f)) * 261.5f) / 1023.0f : (rgb.z * (171.2102946929f - 95.0f) / 0.01125000f + 95.0f) / 1023.0f;
-  } else if (tf == 5) { // Filmlight T-Log
-    rgb.x = rgb.x < 0.0f ? 16.18437649f * rgb.x + 0.075f : _logf(rgb.x + 0.00570482f) * 0.09232903f + 0.55201266f;
-    rgb.y = rgb.y < 0.0f ? 16.18437649f * rgb.y + 0.075f : _logf(rgb.y + 0.00570482f) * 0.09232903f + 0.55201266f;
-    rgb.z = rgb.z < 0.0f ? 16.18437649f * rgb.z + 0.075f : _logf(rgb.z + 0.00570482f) * 0.09232903f + 0.55201266f;
-  } else if (tf == 6) { // DaVinci Intermediate
-    rgb.x = rgb.x <= 0.00262409f ? rgb.x * 10.44426855f : (_log2f(rgb.x + 0.0075f) + 7.0f) * 0.07329248f;
-    rgb.y = rgb.y <= 0.00262409f ? rgb.y * 10.44426855f : (_log2f(rgb.y + 0.0075f) + 7.0f) * 0.07329248f;
-    rgb.z = rgb.z <= 0.00262409f ? rgb.z * 10.44426855f : (_log2f(rgb.z + 0.0075f) + 7.0f) * 0.07329248f;
-  } else if (tf == 7) { // Blackmagic Film Gen5
-    rgb.x = rgb.x < 0.005f ? rgb.x * 8.283605932402494f : 0.08692876065491224f * _log2f(rgb.x + 0.005494072432257808f) + 0.5300133392291939f;
-    rgb.y = rgb.y < 0.005f ? rgb.y * 8.283605932402494f : 0.08692876065491224f * _log2f(rgb.y + 0.005494072432257808f) + 0.5300133392291939f;
-    rgb.z = rgb.z < 0.005f ? rgb.z * 8.283605932402494f : 0.08692876065491224f * _log2f(rgb.z + 0.005494072432257808f) + 0.5300133392291939f;
-  } else if (tf == 8) { // CanonLog3
-    rgb.x = rgb.x/0.9f ;
-    rgb.y = rgb.y/0.9f ;
-    rgb.z = rgb.z/0.9f ;
-    rgb.x = rgb.x < -0.014f ? -0.36726845f * _log10f( 1.0f - 14.98325f * rgb.x ) + 0.12783901f: -0.014f <= rgb.x && rgb.x <= 0.014f?1.9754798f * rgb.x + 0.12512219f:0.36726845f * _log10f( 14.98325f * rgb.x + 1.0f ) + 0.12240537f;
-    rgb.y = rgb.y < -0.014f ? -0.36726845f * _log10f( 1.0f - 14.98325f * rgb.y ) + 0.12783901f: -0.014f <= rgb.y && rgb.y <= 0.014f?1.9754798f * rgb.y + 0.12512219f:0.36726845f * _log10f( 14.98325f * rgb.y + 1.0f ) + 0.12240537f;
-    rgb.z = rgb.z < -0.014f ? -0.36726845f * _log10f( 1.0f - 14.98325f * rgb.z ) + 0.12783901f: -0.014f <= rgb.z && rgb.z <= 0.014f?1.9754798f * rgb.z + 0.12512219f:0.36726845f * _log10f( 14.98325f * rgb.z + 1.0f ) + 0.12240537f;
-  } else if (tf == 9){  // Arri LogC 4
-    const float a = (_powf(2.0f, 18.0f) - 16.0f) / 117.45f;
-    const float b = (1023.0f - 95.0f) / 1023.0f;
-    const float c = 95.0f / 1023.f;
-    const float s = (7.f * _logf(2.0f) * _powf(2.0f, 7.0f - 14.0f * c / b)) / (a * b);
-    const float t = (_powf(2.0f, 14.0f * ((-1.0f * c) / b) + 6.0f) - 64.0f) / a;
-
-    rgb.x = rgb.x >= t ? ((_log2f(a * rgb.x + 64.f) - 6.f) / 14.f) * b + c : (rgb.x - t) / s;
-    rgb.y = rgb.y >= t ? ((_log2f(a * rgb.y + 64.f) - 6.f) / 14.f) * b + c : (rgb.y - t) / s;
-    rgb.z = rgb.z >= t ? ((_log2f(a * rgb.z + 64.f) - 6.f) / 14.f) * b + c : (rgb.z - t) / s;
-  } else if (tf == 10) { // Was CanonLog2, now Normalized Log2
-    // total_exposure = maximum_ev - minimum_ev
-
-    //   in_od = numpy.asarray(in_od)
-    //   in_od[in_od <= 0.0] = numpy.finfo(float).eps
-
-    //   output_log = numpy.clip(
-    //       numpy.log2(in_od / in_middle_grey),
-    //       minimum_ev,
-    //       maximum_ev
-    //   )
-    // return as_numeric((output_log - minimum_ev) / total_exposure)
-
-    rgb = _log2f3(rgb / 0.18f);
-    rgb = clampf3(rgb, -10.0f, 6.5f);
-
-    rgb = (rgb + 10.0f) / 16.5f;
-  } else if (tf == 11){  // Flog2
-    const float a = 5.555556f;
-    const float b = 0.064829f;
-    const float c = 0.245281f;
-    const float d = 0.384316f;
-    const float e = 8.799461f;
-    const float f = 0.092864f;
-    const float cut1 = 0.000889f; // Should be equal to ((cut2 - f) / e)
-    //const float cut2 = 0.100686685370811f; // should be equal to (e * cut1 + f)
-
-    rgb.x = rgb.x>=cut1?(c * _log10f(a * rgb.x + b) + d):(e * rgb.x + f);
-    rgb.y = rgb.y>=cut1?(c * _log10f(a * rgb.y + b) + d):(e * rgb.y + f);
-    rgb.z = rgb.z>=cut1?(c * _log10f(a * rgb.z + b) + d):(e * rgb.z + f);
-  } else if (tf == 14) { // User Controlled Generic Log2 Curve
-    rgb = _log2f3(rgb / 0.18f);
-    rgb = clampf3(rgb, generic_log2_min_expo, generic_log2_max_expo);
-    rgb = (rgb + _fabs(generic_log2_min_expo)) / (fabs(generic_log2_min_expo)+fabs(generic_log2_max_expo));
-  }
-  // else if (tf == 12) {
-  //     // BMFilm Placeholder
-  // }
-  return rgb;
-}
-
 __DEVICE__ float3 log2lin(float3 rgb, int tf, float generic_log2_min_expo = -10, float generic_log2_max_expo = 6.5) {
   if (tf == 0) return rgb;
   else if (tf == 1) { // ACEScct
@@ -933,6 +845,96 @@ __DEVICE__ float3 log2lin(float3 rgb, int tf, float generic_log2_min_expo = -10,
     rgb.y = 0.18*_powf(2,(rgb.y*(mx-mn)+mn));
     rgb.z = 0.18*_powf(2,(rgb.z*(mx-mn)+mn));
   }
+  return rgb;
+}
+
+__DEVICE__ float3 lin2log(float3 rgb, int tf, float generic_log2_min_expo = -10, float generic_log2_max_expo = 6.5) {
+  float log_floor = log2lin(make_float3(0.0f), tf, generic_log2_min_expo, generic_log2_max_expo).x;
+  rgb = maxf3(log_floor, rgb);
+  if (tf == 0) return rgb;
+  else if (tf == 1) { // ACEScct
+    rgb.x = rgb.x > 0.0078125f ? (_log2f(rgb.x) + 9.72f) / 17.52f : 10.5402377416545f * rgb.x + 0.0729055341958355f;
+    rgb.y = rgb.y > 0.0078125f ? (_log2f(rgb.y) + 9.72f) / 17.52f : 10.5402377416545f * rgb.y + 0.0729055341958355f;
+    rgb.z = rgb.z > 0.0078125f ? (_log2f(rgb.z) + 9.72f) / 17.52f : 10.5402377416545f * rgb.z + 0.0729055341958355f;
+  } else if (tf == 2) { // Arri V3 LogC EI 800
+    rgb.x = rgb.x > 0.010591f ? 0.24719f * _log10f(5.555556f * rgb.x + 0.052272f) + 0.385537f : 5.367655f * rgb.x + 0.092809f;
+    rgb.y = rgb.y > 0.010591f ? 0.24719f * _log10f(5.555556f * rgb.y + 0.052272f) + 0.385537f : 5.367655f * rgb.y + 0.092809f;
+    rgb.z = rgb.z > 0.010591f ? 0.24719f * _log10f(5.555556f * rgb.z + 0.052272f) + 0.385537f : 5.367655f * rgb.z + 0.092809f;
+  } else if (tf == 3) { // Red Log3G10
+    rgb.x = rgb.x > -0.01f ? 0.224282f * _log10f(((rgb.x + 0.01f) * 155.975327f) + 1.0f) : (rgb.x + 0.01f) * 15.1927f;
+    rgb.y = rgb.y > -0.01f ? 0.224282f * _log10f(((rgb.y + 0.01f) * 155.975327f) + 1.0f) : (rgb.y + 0.01f) * 15.1927f;
+    rgb.z = rgb.z > -0.01f ? 0.224282f * _log10f(((rgb.z + 0.01f) * 155.975327f) + 1.0f) : (rgb.z + 0.01f) * 15.1927f;
+  } else if (tf == 4) { // Sony SLog3
+    rgb.x = rgb.x >= 0.01125f ? (420.0f + _log10f((rgb.x + 0.01f) / (0.18f + 0.01f)) * 261.5f) / 1023.0f : (rgb.x * (171.2102946929f - 95.0f) / 0.01125000f + 95.0f) / 1023.0f;
+    rgb.y = rgb.y >= 0.01125f ? (420.0f + _log10f((rgb.y + 0.01f) / (0.18f + 0.01f)) * 261.5f) / 1023.0f : (rgb.y * (171.2102946929f - 95.0f) / 0.01125000f + 95.0f) / 1023.0f;
+    rgb.z = rgb.z >= 0.01125f ? (420.0f + _log10f((rgb.z + 0.01f) / (0.18f + 0.01f)) * 261.5f) / 1023.0f : (rgb.z * (171.2102946929f - 95.0f) / 0.01125000f + 95.0f) / 1023.0f;
+  } else if (tf == 5) { // Filmlight T-Log
+    rgb.x = rgb.x < 0.0f ? 16.18437649f * rgb.x + 0.075f : _logf(rgb.x + 0.00570482f) * 0.09232903f + 0.55201266f;
+    rgb.y = rgb.y < 0.0f ? 16.18437649f * rgb.y + 0.075f : _logf(rgb.y + 0.00570482f) * 0.09232903f + 0.55201266f;
+    rgb.z = rgb.z < 0.0f ? 16.18437649f * rgb.z + 0.075f : _logf(rgb.z + 0.00570482f) * 0.09232903f + 0.55201266f;
+  } else if (tf == 6) { // DaVinci Intermediate
+    rgb.x = rgb.x <= 0.00262409f ? rgb.x * 10.44426855f : (_log2f(rgb.x + 0.0075f) + 7.0f) * 0.07329248f;
+    rgb.y = rgb.y <= 0.00262409f ? rgb.y * 10.44426855f : (_log2f(rgb.y + 0.0075f) + 7.0f) * 0.07329248f;
+    rgb.z = rgb.z <= 0.00262409f ? rgb.z * 10.44426855f : (_log2f(rgb.z + 0.0075f) + 7.0f) * 0.07329248f;
+  } else if (tf == 7) { // Blackmagic Film Gen5
+    rgb.x = rgb.x < 0.005f ? rgb.x * 8.283605932402494f : 0.08692876065491224f * _log2f(rgb.x + 0.005494072432257808f) + 0.5300133392291939f;
+    rgb.y = rgb.y < 0.005f ? rgb.y * 8.283605932402494f : 0.08692876065491224f * _log2f(rgb.y + 0.005494072432257808f) + 0.5300133392291939f;
+    rgb.z = rgb.z < 0.005f ? rgb.z * 8.283605932402494f : 0.08692876065491224f * _log2f(rgb.z + 0.005494072432257808f) + 0.5300133392291939f;
+  } else if (tf == 8) { // CanonLog3
+    rgb.x = rgb.x/0.9f ;
+    rgb.y = rgb.y/0.9f ;
+    rgb.z = rgb.z/0.9f ;
+    rgb.x = rgb.x < -0.014f ? -0.36726845f * _log10f( 1.0f - 14.98325f * rgb.x ) + 0.12783901f: -0.014f <= rgb.x && rgb.x <= 0.014f?1.9754798f * rgb.x + 0.12512219f:0.36726845f * _log10f( 14.98325f * rgb.x + 1.0f ) + 0.12240537f;
+    rgb.y = rgb.y < -0.014f ? -0.36726845f * _log10f( 1.0f - 14.98325f * rgb.y ) + 0.12783901f: -0.014f <= rgb.y && rgb.y <= 0.014f?1.9754798f * rgb.y + 0.12512219f:0.36726845f * _log10f( 14.98325f * rgb.y + 1.0f ) + 0.12240537f;
+    rgb.z = rgb.z < -0.014f ? -0.36726845f * _log10f( 1.0f - 14.98325f * rgb.z ) + 0.12783901f: -0.014f <= rgb.z && rgb.z <= 0.014f?1.9754798f * rgb.z + 0.12512219f:0.36726845f * _log10f( 14.98325f * rgb.z + 1.0f ) + 0.12240537f;
+  } else if (tf == 9){  // Arri LogC 4
+    const float a = (_powf(2.0f, 18.0f) - 16.0f) / 117.45f;
+    const float b = (1023.0f - 95.0f) / 1023.0f;
+    const float c = 95.0f / 1023.f;
+    const float s = (7.f * _logf(2.0f) * _powf(2.0f, 7.0f - 14.0f * c / b)) / (a * b);
+    const float t = (_powf(2.0f, 14.0f * ((-1.0f * c) / b) + 6.0f) - 64.0f) / a;
+
+    rgb.x = rgb.x >= t ? ((_log2f(a * rgb.x + 64.f) - 6.f) / 14.f) * b + c : (rgb.x - t) / s;
+    rgb.y = rgb.y >= t ? ((_log2f(a * rgb.y + 64.f) - 6.f) / 14.f) * b + c : (rgb.y - t) / s;
+    rgb.z = rgb.z >= t ? ((_log2f(a * rgb.z + 64.f) - 6.f) / 14.f) * b + c : (rgb.z - t) / s;
+  } else if (tf == 10) { // Was CanonLog2, now Normalized Log2
+    // total_exposure = maximum_ev - minimum_ev
+
+    //   in_od = numpy.asarray(in_od)
+    //   in_od[in_od <= 0.0] = numpy.finfo(float).eps
+
+    //   output_log = numpy.clip(
+    //       numpy.log2(in_od / in_middle_grey),
+    //       minimum_ev,
+    //       maximum_ev
+    //   )
+    // return as_numeric((output_log - minimum_ev) / total_exposure)
+
+    rgb = _log2f3(rgb / 0.18f);
+    rgb = clampf3(rgb, -10.0f, 6.5f);
+
+    rgb = (rgb + 10.0f) / 16.5f;
+  } else if (tf == 11){  // Flog2
+    const float a = 5.555556f;
+    const float b = 0.064829f;
+    const float c = 0.245281f;
+    const float d = 0.384316f;
+    const float e = 8.799461f;
+    const float f = 0.092864f;
+    const float cut1 = 0.000889f; // Should be equal to ((cut2 - f) / e)
+    //const float cut2 = 0.100686685370811f; // should be equal to (e * cut1 + f)
+
+    rgb.x = rgb.x>=cut1?(c * _log10f(a * rgb.x + b) + d):(e * rgb.x + f);
+    rgb.y = rgb.y>=cut1?(c * _log10f(a * rgb.y + b) + d):(e * rgb.y + f);
+    rgb.z = rgb.z>=cut1?(c * _log10f(a * rgb.z + b) + d):(e * rgb.z + f);
+  } else if (tf == 14) { // User Controlled Generic Log2 Curve
+    rgb = _log2f3(rgb / 0.18f);
+    rgb = clampf3(rgb, generic_log2_min_expo, generic_log2_max_expo);
+    rgb = (rgb + _fabs(generic_log2_min_expo)) / (fabs(generic_log2_min_expo)+fabs(generic_log2_max_expo));
+  }
+  // else if (tf == 12) {
+  //     // BMFilm Placeholder
+  // }
   return rgb;
 }
 

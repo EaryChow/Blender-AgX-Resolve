@@ -342,23 +342,18 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 
   rgb = mult_f3_f33(rgb, in_to_working);
 
-  float3 uniform_logfloor = log2lin(make_float3(0.0, 0.0, 0.0), tf, generic_log2_min, generic_log2_max);
-
   // Apply luminance compensation
   if (use_compensate_low_side) {
      rgb = compensate_low_side(rgb, false, working_chromaticities);
   }
   else {
-     rgb = maxf3(uniform_logfloor.x, rgb);
+     rgb = maxf3(0.0f, rgb);
   }
 
   //apply inset matrix
   rgb = mult_f3_f33(rgb, insetmat);
 
   float3 pre_hsv = RGB_to_HSV(rgb);
-  
-
-  rgb = maxf3(uniform_logfloor.x, rgb);
   
   rgb = lin2log(rgb, tf, generic_log2_min, generic_log2_max);
 

@@ -374,7 +374,9 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     float base_exposure_range = 16.5f;
     slope = ((fabsf(generic_log2_min) + generic_log2_max) / base_exposure_range) * slope;
   }
-  if (use_hdr) {sp = sp * hdr_shoulder_power;}
+  if (use_hdr) {
+    float hdr_shoulder_power_multiplier = _powf(hdr_sdr_ratio, _log10f(hdr_shoulder_power));
+    sp = sp * hdr_shoulder_power_multiplier;}
   rgb.x = tonescale(rgb.x, sp, tp, slope, lmg+pivot_offset, mg,1,0);
   rgb.y = tonescale(rgb.y, sp, tp, slope, lmg+pivot_offset, mg,1,0);
   rgb.z = tonescale(rgb.z, sp, tp, slope, lmg+pivot_offset, mg,1,0);

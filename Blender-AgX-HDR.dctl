@@ -30,7 +30,7 @@ DEFINE_UI_PARAMS(tinting_outset, Tinting Scale, DCTLUI_SLIDER_FLOAT, 0, -0.2, 0.
 DEFINE_UI_PARAMS(tinting_rotate, Tinting Hue, DCTLUI_SLIDER_FLOAT, 0, -180, 180, 0.001)
 DEFINE_UI_PARAMS(use_compensate_low_side, Compensate for the Negatives, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(use_hdr, Use HDR, DCTLUI_CHECK_BOX, 0)
-DEFINE_UI_PARAMS(hdr_peak, HDR Peak Nits, DCTLUI_SLIDER_FLOAT, 1000, 400, 4000, 1)
+DEFINE_UI_PARAMS(hdr_peak, HDR Peak Nits, DCTLUI_SLIDER_FLOAT, 1000, 400, 1000, 1)
 DEFINE_UI_PARAMS(sdr_peak, SDR Peak Nits, DCTLUI_SLIDER_FLOAT, 203, 100, 400, 1)
 DEFINE_UI_PARAMS(hdr_purity, HDR Purity, DCTLUI_SLIDER_FLOAT, 0.50, 0, 1.0, 0.001)
 DEFINE_UI_PARAMS(hdr_shoulder_power, HDR Shoulder Power, DCTLUI_SLIDER_FLOAT, 2.0, 1.0, 3.0, 0.001)

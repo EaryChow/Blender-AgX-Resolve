@@ -107,8 +107,11 @@ The peak nits for HDR output. UI limited to [400, 1000] with default of 1000.
 ## SDR Peak Nits
 The SDR peak nits assumption. UI limted to [100, 400] with default of 203.
 
-## HDR Extra Attenuation
-Apply extra attenuation only to HDR. Since the darkening is done in a per-channel way, the darkened image can sometimes feel a bit too chroma-laden, this setting is an attempt to compensate for that.
+## HDR Extra Shoulder Power
+Apply extra multiplier to sigmoid's shoulder power parameter, compensating for HDR's middle gray darkening.
+
+## HDR purity
+Adjust purity of the "HDR headroom". 
 
 ## HDR as percentage for SDR
 In case `Use HDR` is checked with the output transfer function set to SDR ones. If checked, it outputs the image with a darkened middle grey. If not checked, it outputs the darkened-middle-grey image being scaled backup globally (which means clipping might occur). Default is checked to avoid output clipping. 

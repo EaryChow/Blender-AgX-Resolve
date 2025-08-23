@@ -23,12 +23,18 @@ DEFINE_UI_PARAMS(generic_log2_max, Log2 Max Stop, DCTLUI_SLIDER_FLOAT, 6.5, 4.0,
 DEFINE_UI_PARAMS(log2_maintain_contrast, Maintain General Contrast, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(pivot_offset, Contrast Pivot Offset, DCTLUI_SLIDER_FLOAT, 0, -0.3, 0.18, 0.01)
 DEFINE_UI_PARAMS(out_gamut, Output Primaries, DCTLUI_COMBO_BOX, 5, {outap0, outap1, outp3d65, outp3d60, outrec2020, outrec709, outawg3, outawg4, outrwg, outsgamut3, outsgamut3cine, outblackmagicwg, outcanoncinema, outdavinciwg, outegamut}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
-DEFINE_UI_PARAMS(out_transfer, Output Transfer, DCTLUI_COMBO_BOX, 1, {out_linear, out_sRGB_inverse_EOTF, out_BT1886_inverse_EOTF}, { Linear, sRGB Inverse EOTF 2.2, BT.1886 Inverse EOTF 2.4})
+DEFINE_UI_PARAMS(out_transfer, Output Transfer, DCTLUI_COMBO_BOX, 1, {out_linear, out_sRGB_inverse_EOTF, out_BT1886_inverse_EOTF, out_BT2100HLG_inverse_EOTF, out_BT2100PQ_inverse_EOTF}, { Linear, sRGB Inverse EOTF 2.2, BT.1886 Inverse EOTF 2.4, BT.2100-HLG Inverse EOTF, BT.2100-PQ Inverse EOTF})
 DEFINE_UI_PARAMS(logoutput, Log Encoded Output, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(angle_lerp, Per-Channel Hue Flight, DCTLUI_SLIDER_FLOAT, 0.4, 0.0, 1.0, 0.01)
 DEFINE_UI_PARAMS(tinting_outset, Tinting Scale, DCTLUI_SLIDER_FLOAT, 0, -0.2, 0.2, 0.001)
 DEFINE_UI_PARAMS(tinting_rotate, Tinting Hue, DCTLUI_SLIDER_FLOAT, 0, -180, 180, 0.001)
 DEFINE_UI_PARAMS(use_compensate_low_side, Compensate for the Negatives, DCTLUI_CHECK_BOX, 1)
+DEFINE_UI_PARAMS(use_hdr, Use HDR, DCTLUI_CHECK_BOX, 0)
+DEFINE_UI_PARAMS(hdr_peak, HDR Peak Nits, DCTLUI_SLIDER_FLOAT, 1000, 400, 1000, 1)
+DEFINE_UI_PARAMS(sdr_peak, SDR Peak Nits, DCTLUI_SLIDER_FLOAT, 203, 100, 400, 1)
+DEFINE_UI_PARAMS(hdr_purity, HDR Purity, DCTLUI_SLIDER_FLOAT, 0.50, 0, 1.0, 0.001)
+DEFINE_UI_PARAMS(hdr_shoulder_power, HDR Shoulder Power, DCTLUI_SLIDER_FLOAT, 2.0, 1.0, 3.0, 0.001)
+DEFINE_UI_PARAMS(use_hdr_as_percent_for_sdr, HDR as percentage for SDR, DCTLUI_CHECK_BOX, 1)
 
 #include "Blender-AgX-Lib.h"
 
@@ -43,6 +49,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
   Chromaticities working_chromaticities = {{0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}};
   Chromaticities out_chromaticities = {{0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}};
   float out_transfer_function = 0.0;
+  float hdr_sdr_ratio = hdr_peak / sdr_peak;
 
   if (in_gamut == ap0) {
     in_to_xyz = matrix_ap0_to_xyz;
@@ -342,6 +349,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 
   rgb = mult_f3_f33(rgb, in_to_working);
 
+
   // Apply luminance compensation
   if (use_compensate_low_side) {
      rgb = compensate_low_side(rgb, false, working_chromaticities);
@@ -366,15 +374,37 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     float base_exposure_range = 16.5f;
     slope = ((fabsf(generic_log2_min) + generic_log2_max) / base_exposure_range) * slope;
   }
-
-  rgb.x = tonescale(rgb.x, sp, tp, slope, lmg+pivot_offset, mg);
-  rgb.y = tonescale(rgb.y, sp, tp, slope, lmg+pivot_offset, mg);
-  rgb.z = tonescale(rgb.z, sp, tp, slope, lmg+pivot_offset, mg);
+  if (use_hdr) {
+    float hdr_shoulder_power_multiplier = _powf(hdr_sdr_ratio, _log10f(hdr_shoulder_power));
+    sp = sp * hdr_shoulder_power_multiplier;}
+  rgb.x = tonescale(rgb.x, sp, tp, slope, lmg+pivot_offset, mg,1,0);
+  rgb.y = tonescale(rgb.y, sp, tp, slope, lmg+pivot_offset, mg,1,0);
+  rgb.z = tonescale(rgb.z, sp, tp, slope, lmg+pivot_offset, mg,1,0);
   //rgb = clampf3(rgb,0,1);
 
   float3 img = rgb;
 
   img  = spowf3(img,2.4);
+
+  // HDR darken middle grey
+  if (use_hdr) {
+    float3 pre_darken_hsv = RGB_to_HSV(img);
+    img = lin2log(img, 14, -20.0, 2.47393118833);
+
+    float hdr_mg_pre_darken = lin2log(make_float3(0.18), 14, -20.0, 2.47393118833).x;
+    float hdr_mg_darkened =  lin2log(make_float3(0.18/hdr_sdr_ratio), 14, -20.0, 2.47393118833).x;
+    // slope set to 1.000001 instead of 1.0 to prevent the curve from breaking when hdr_peak == sdr_peak
+    img.x = tonescale(img.x, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
+    img.y = tonescale(img.y, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
+    img.z = tonescale(img.z, 1, 3, 1.000001, hdr_mg_pre_darken, hdr_mg_darkened,1,0);
+
+    img = log2lin(img, 14, -20.0, 2.47393118833);
+
+    float3 post_darken_hsv = RGB_to_HSV(img);
+    post_darken_hsv.x = lerp_chromaticity_angle(pre_darken_hsv.x, post_darken_hsv.x, hdr_purity);
+    post_darken_hsv.y = lerp(pre_darken_hsv.y, post_darken_hsv.y, hdr_purity);
+    img = HSV_to_RGB(post_darken_hsv);
+  }
 
   float3 post_hsv = RGB_to_HSV(img);
   post_hsv.x = lerp_chromaticity_angle(pre_hsv.x, post_hsv.x, angle_lerp);
@@ -393,15 +423,38 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
 
   img = clampf3(img,0,1);
 
+  // prepare image for HDR encodings with SDR peak nits normalization
+  if (use_hdr == 1 && out_transfer == out_BT2100HLG_inverse_EOTF) {
+    img *= hdr_sdr_ratio;
+  }
+  else if (use_hdr == 1 && out_transfer == out_BT2100PQ_inverse_EOTF) {
+    img *= hdr_sdr_ratio;
+  }
+  else if (use_hdr == 1 && use_hdr_as_percent_for_sdr == 0) {
+    img *= hdr_sdr_ratio;
+  }
+
+
   switch (logoutput) {
     case 0:
-        img  = encode_inverse_EOTF(img, out_transfer_function);
-        img = maxf3(0.0,img);
-        //img.x = _fabs(img.x);
-        //img.y = _fabs(img.y);
-        //img.z = _fabs(img.z);
+      if (out_transfer == out_BT2100HLG_inverse_EOTF) {
+          img = eotf_hlg(img, 1, sdr_peak);
+          img = maxf3(0.0,img);
+          break;
+      }
+      else if (out_transfer == out_BT2100PQ_inverse_EOTF) {
+          img = eotf_pq(img, 1, 0, sdr_peak);
+          img = maxf3(0.0,img);
+          break;
+      }
+      else {
+          img  = encode_inverse_EOTF(img, out_transfer_function);
+          img = maxf3(0.0,img);
+          //img.x = _fabs(img.x);
+          //img.y = _fabs(img.y);
+          //img.z = _fabs(img.z);
 
-        break;
+          break;}
     case 1:
         img=clampf3(log, 0, 1);
         break;

@@ -95,6 +95,20 @@ This is the "Lower Guard Rail" used in Blender's AgX to handle negative values.
 ## Log Encoded Output
 Toggle to control whether to encode to the Working Log Encoding with Output Primaries for the output
 
-## Experimental HDR
-An experimental branch with HDR support is here: https://github.com/EaryChow/Blender-AgX-Resolve/tree/Blender-AgX-DCTL-HDR-Experimental
-This HDR branch is experimental, testing things out, no guarantee of final design. But testers will be appreciated.
+## Use HDR
+Checkbox to enable HDR-specific logic. When enabled, the middle grey of the image will be darkened. Darken by how much, depends on the HDR_Peak/SDR_Peak ratio determined by the following two settings.
+
+## HDR Peak Nits
+The peak nits for HDR output. UI limited to [400, 1000] with default of 1000.
+
+## SDR Peak Nits
+The SDR peak nits assumption. UI limted to [100, 400] with default of 203.
+
+## HDR Extra Shoulder Power
+Apply extra multiplier to sigmoid's shoulder power parameter, compensating for HDR's middle gray darkening.
+
+## HDR purity
+Adjust purity of the "HDR headroom". 
+
+## HDR as percentage for SDR
+In case `Use HDR` is checked with the output transfer function set to SDR ones. If checked, it outputs the image with a darkened middle grey. If not checked, it outputs the darkened-middle-grey image being scaled backup globally (which means clipping might occur). Default is checked to avoid output clipping. 

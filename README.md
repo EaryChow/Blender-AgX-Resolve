@@ -41,23 +41,23 @@ That said, an author can set the values to whatever they choose, and the AgX mec
 # Parameters
 These parameters work together, and thus one can expect any single parameter to drive other potential colour qualia.
 
-## Attenuation Rate
+## RGB Purity Attenuation
 Greater values increase the rate of chromaticity attenuation as tristimulus values ascend. Lower values will slow the rate of attenuation. Slower rates may induce cognitively dissonant gradations, where a cognition mislocates the 2.5D "layer" from "under" to "over" or "through". For more information, please read the ramblings around [Picture Formation here](https://github.com/sobotka/scise/wiki/Picture-Formation).
 
-## Hue Flight
+## RGB Rotations
 Controls the direction and rate of chromaticity angle flights. Value is degrees in CIE xy. Higher values will increase chromaticity angle flight speed toward the direction specified. 
 
 ## Inset
-Attenuation + Hue Flight = Inset.
+Purity Attenuation + RGB Rotation = Inset.
 
-## Purity
+## Restore Purity
 Controls the general purity of the primary when processing is complete. Some colourimetries will yield values that are too strong, breaking the surface of the picture. To reduce purity, decrease value. For a complete round trip no operation, set to match the Attenuation Rate above.
 
-## Reverse Hue Flight
-Partially reverse the Hue Flight, but due to the per-channel mechanism, it intentionally won't actually cancel the hue flight, but leave some "shifts" in place, which is the whole point of the Hue Flight mechanism.
+## Reverse RGB Rotation
+Partially reverse the RGB Rotation, but due to the per-channel mechanism, it intentionally won't actually cancel the hue flight, but leave some "shifts" in place, which is the whole point of the Hue Flight mechanism.
 
 ## Outset
-Purity + Reverse Hue Flight = Outset.
+Restore Purity + Reverse RGB Rotation = Outset.
 
 ## Contrast
 General contrasts of specified regions.
@@ -83,8 +83,8 @@ Offset added to the Working middle grey point in Log state. When offset is 0, th
 ## Log2 Min and Max Stop
 These two settings are only used when the working Log is set to `Generic Log2`, which is a user controlled pure Log2 curve.
 
-## Per-Channel Hue Flight
-Controls the strength of the Per-Channel Hue Flight, 0 means completely chromaticity-linear, 1 means compeletely per-channel, default is set to 0.4 for matching Blender.
+## Hue Flight Strength
+The strength of the Per-Channel Hue Flight, 0 means completely chromaticity-linear, 1 means compeletely per-channel. Higher value would typically have yellower fire, for example. Blender's LUT sets it to 0.4.
 
 ## Tinting Scale and Tinting Hue
 Mechanism ported from SB2383 python script. This adjusted the achromatic point * of the outset only * to create a tinting effect. It scales the achromatic point away from its original position, rotate it, then draw a line between the original position and the rotated position, and find the intersection point as "hull point". The final adjusted achromatic point derives from interpolating between the original position and the "hull point" position, with 0 meaning the original position, and 1 meaning the hull point. UI slider range is limited to prevent breaking of the image.

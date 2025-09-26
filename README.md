@@ -51,13 +51,16 @@ Controls the direction and rate of chromaticity angle flights. Value is degrees 
 Purity Attenuation + RGB Rotation = Inset.
 
 ## Restore Purity
-Controls the general purity of the primary when processing is complete. Some colourimetries will yield values that are too strong, breaking the surface of the picture. To reduce purity, decrease value. For a complete round trip no operation, set to match the Attenuation Rate above.
+Controls the general purity of the primary when processing is complete. Some colourimetries will yield values that are too strong, breaking the surface of the picture. To reduce purity, decrease value. For a complete round trip no operation, set to match the Attenuation Rate above, or check the `Use Inverse of Inset for Outset` checkbox.
 
 ## Reverse RGB Rotation
 Partially reverse the RGB Rotation, but due to the per-channel mechanism, it intentionally won't actually cancel the hue flight, but leave some "shifts" in place, which is the whole point of the Hue Flight mechanism.
 
 ## Outset
 Restore Purity + Reverse RGB Rotation = Outset.
+
+## Use Inverse of Inset for Outset
+If checked, the Outset mechanism will use the inverse of the Inset mechanism. When checked, the outset parameters will lose effect. 
 
 ## Contrast
 General contrasts of specified regions.
@@ -79,6 +82,9 @@ Output primaries encoding.
 
 ## Contrast Pivot Offset
 Offset added to the Working middle grey point in Log state. When offset is 0, the working Log middle grey is at where the working log would encode from linear 0.18, in othe words, lin_to_log(0.18).
+
+## MidGray
+The middle gray percentage in formed linearized picture. Default is 18%.
 
 ## Log2 Min and Max Stop
 These two settings are only used when the working Log is set to `Generic Log2`, which is a user controlled pure Log2 curve.

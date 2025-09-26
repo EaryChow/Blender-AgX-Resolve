@@ -26,7 +26,7 @@ DEFINE_UI_PARAMS(linear_midgray_percentage, MidGray, DCTLUI_SLIDER_FLOAT, 18, 10
 DEFINE_UI_PARAMS(out_gamut, Output Primaries, DCTLUI_COMBO_BOX, 5, {outap0, outap1, outp3d65, outp3d60, outrec2020, outrec709, outawg3, outawg4, outrwg, outsgamut3, outsgamut3cine, outblackmagicwg, outcanoncinema, outdavinciwg, outegamut}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
 DEFINE_UI_PARAMS(out_transfer, Output Transfer, DCTLUI_COMBO_BOX, 1, {out_linear, out_sRGB_inverse_EOTF, out_BT1886_inverse_EOTF, out_BT2100HLG_inverse_EOTF, out_BT2100PQ_inverse_EOTF}, { Linear, sRGB Inverse EOTF 2.2, BT.1886 Inverse EOTF 2.4, BT.2100-HLG Inverse EOTF, BT.2100-PQ Inverse EOTF})
 DEFINE_UI_PARAMS(logoutput, Log Encoded Output, DCTLUI_CHECK_BOX, 0)
-DEFINE_UI_PARAMS(angle_lerp, Hue Flight Strength, DCTLUI_SLIDER_FLOAT, 0.4, 0.0, 1.0, 0.01)
+DEFINE_UI_PARAMS(angle_lerp, Hue Flight Strength, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 1.0, 0.01)
 DEFINE_UI_PARAMS(tinting_outset, Tinting Scale, DCTLUI_SLIDER_FLOAT, 0, -0.2, 0.2, 0.001)
 DEFINE_UI_PARAMS(tinting_rotate, Tinting Hue, DCTLUI_SLIDER_FLOAT, 0, -180, 180, 0.001)
 DEFINE_UI_PARAMS(use_compensate_low_side, Compensate for the Negatives, DCTLUI_CHECK_BOX, 1)

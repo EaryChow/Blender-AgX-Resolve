@@ -21,7 +21,6 @@ DEFINE_UI_PARAMS(working_log, Working Log Encoding, DCTLUI_COMBO_BOX, 11, {linea
 DEFINE_UI_PARAMS(generic_log2_min, Log2 Min Stop, DCTLUI_SLIDER_FLOAT, -10, -15, -5, 0.1)
 DEFINE_UI_PARAMS(generic_log2_max, Log2 Max Stop, DCTLUI_SLIDER_FLOAT, 6.5, 4.0, 15, 0.1)
 DEFINE_UI_PARAMS(log2_maintain_contrast, Maintain General Contrast, DCTLUI_CHECK_BOX, 1)
-DEFINE_UI_PARAMS(pivot_offset, Contrast Pivot Offset, DCTLUI_SLIDER_FLOAT, 0, -0.3, 0.18, 0.01)
 DEFINE_UI_PARAMS(linear_midgray_percentage, MidGray, DCTLUI_SLIDER_FLOAT, 18, 10, 25, 0.01)
 DEFINE_UI_PARAMS(out_gamut, Output Primaries, DCTLUI_COMBO_BOX, 5, {outap0, outap1, outp3d65, outp3d60, outrec2020, outrec709, outawg3, outawg4, outrwg, outsgamut3, outsgamut3cine, outblackmagicwg, outcanoncinema, outdavinciwg, outegamut}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
 DEFINE_UI_PARAMS(out_transfer, Output Transfer, DCTLUI_COMBO_BOX, 1, {out_linear, out_sRGB_inverse_EOTF, out_BT1886_inverse_EOTF, out_BT2100HLG_inverse_EOTF, out_BT2100PQ_inverse_EOTF}, { Linear, sRGB Inverse EOTF 2.2, BT.1886 Inverse EOTF 2.4, BT.2100-HLG Inverse EOTF, BT.2100-PQ Inverse EOTF})
@@ -378,9 +377,9 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
   if (use_hdr) {
     float hdr_shoulder_power_multiplier = _powf(hdr_sdr_ratio, _log10f(hdr_shoulder_power));
     sp = sp * hdr_shoulder_power_multiplier;}
-  rgb.x = tonescale(rgb.x, sp, tp, slope, lmg+pivot_offset, mg,1,0);
-  rgb.y = tonescale(rgb.y, sp, tp, slope, lmg+pivot_offset, mg,1,0);
-  rgb.z = tonescale(rgb.z, sp, tp, slope, lmg+pivot_offset, mg,1,0);
+  rgb.x = tonescale(rgb.x, sp, tp, slope, lmg, mg,1,0);
+  rgb.y = tonescale(rgb.y, sp, tp, slope, lmg, mg,1,0);
+  rgb.z = tonescale(rgb.z, sp, tp, slope, lmg, mg,1,0);
   //rgb = clampf3(rgb,0,1);
 
   float3 img = rgb;

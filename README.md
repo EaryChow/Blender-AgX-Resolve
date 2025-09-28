@@ -80,11 +80,8 @@ Log-like transfer for the working space.
 ## Output Primaries
 Output primaries encoding.
 
-## Contrast Pivot Offset
-Offset added to the Working middle grey point in Log state. When offset is 0, the working Log middle grey is at where the working log would encode from linear 0.18, in othe words, lin_to_log(0.18).
-
 ## MidGray
-The middle gray percentage in formed linearized picture. Default is 18%.
+The middle gray percentage in formed linearized picture. Default is 18%. Cinema-targeted picture formations usually sets it around 10% for the theatre viewing environment.  
 
 ## Log2 Min and Max Stop
 These two settings are only used when the working Log is set to `Generic Log2`, which is a user controlled pure Log2 curve.

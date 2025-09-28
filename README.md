@@ -81,7 +81,7 @@ Log-like transfer for the working space.
 Output primaries encoding.
 
 ## MidGray
-The middle gray percentage in formed linearized picture. Default is 18%. Cinema-targeted picture formations usually sets it around 10% for the theatre viewing environment.  
+The middle gray percentage in formed linearized picture. Default is 18%. Cinema-targeted picture formations usually set it around 10% for the theatre viewing environment.  
 
 ## Log2 Min and Max Stop
 These two settings are only used when the working Log is set to `Generic Log2`, which is a user controlled pure Log2 curve.

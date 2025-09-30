@@ -44,7 +44,7 @@ typedef struct {
 // Color Spaces Coordinates
 //AP0, AP1 and P3D60 was changed to D65. Method is, first arrive at RGB D60 to XYZ D65 matrix by "Bradford matrix * RGB to XYZ D60 matrix", and then reverse engineer the D65 version of the primaries coordinates from the matrix.
 __CONSTANT__ Chromaticities AP0 =
-{ {0.7348552433737107f, 0.2642253252455353f}, {-0.006170912478622476f, 1.0113149590212862f}, {0.01596755925504054f, -0.0642355031285507f}, {0.3127f, 0.3129f} };
+{ {0.7348552433737107f, 0.2642253252455353f}, {-0.006170912478622476f, 1.0113149590212862f}, {0.01596755925504054f, -0.0642355031285507f}, {0.3127f, 0.329f} };
 //__CONSTANT__ Chromaticities AP0 =
 //{ {0.7347f, 0.2653f}, {0.0f, 1.0f}, {0.0001f, -0.077f}, {0.32168f, 0.33767f} };
 __CONSTANT__ Chromaticities AP1 =

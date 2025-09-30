@@ -23,7 +23,7 @@ DEFINE_UI_PARAMS(generic_log2_max, Log2 Max Stop, DCTLUI_SLIDER_FLOAT, 6.5, 4.0,
 DEFINE_UI_PARAMS(log2_maintain_contrast, Maintain General Contrast, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(linear_midgray_percentage, MidGray, DCTLUI_SLIDER_FLOAT, 18, 10, 25, 0.01)
 DEFINE_UI_PARAMS(out_gamut, Output Primaries, DCTLUI_COMBO_BOX, 2, {outp3d65, outrec2020, outrec709}, {P3D65, Rec.2020, Rec.709})
-DEFINE_UI_PARAMS(out_transfer, Output Transfer, DCTLUI_COMBO_BOX, 1, {out_linear, out_sRGB_inverse_EOTF, out_BT1886_inverse_EOTF, out_BT2100HLG_inverse_EOTF, out_BT2100PQ_inverse_EOTF, sRGB_piecewise}, { Linear, sRGB Inverse EOTF 2.2, BT.1886 Inverse EOTF 2.4, BT.2100-HLG Inverse EOTF, BT.2100-PQ Inverse EOTF, sRGB Piecewise})
+DEFINE_UI_PARAMS(out_transfer, Output Transfer, DCTLUI_COMBO_BOX, 2, {out_linear, out_sRGB_inverse_EOTF, out_BT1886_inverse_EOTF, out_BT2100HLG_inverse_EOTF, out_BT2100PQ_inverse_EOTF, sRGB_piecewise}, { Linear, sRGB Inverse EOTF 2.2, BT.1886 Inverse EOTF 2.4, BT.2100-HLG Inverse EOTF, BT.2100-PQ Inverse EOTF, sRGB Piecewise})
 DEFINE_UI_PARAMS(logoutput, Log Encoded Output, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(angle_lerp, Hue Flight Strength, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 1.0, 0.01)
 DEFINE_UI_PARAMS(tinting_outset, Tinting Scale, DCTLUI_SLIDER_FLOAT, 0, -0.2, 0.2, 0.001)

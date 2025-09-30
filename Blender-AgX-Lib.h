@@ -1070,3 +1070,16 @@ __DEVICE__ float3 eotf_pq(float3 rgb, int inverse, int jz, float sdr_peak_nits =
   }
   return rgb;
 }
+
+__DEVICE__ float3 sRGB_piecewise_transfer_function(float3 rgb, bool decode) {
+  if (decode) {
+    rgb.x = rgb.x <= 0.04045f ? rgb.x / 12.92f : _powf((rgb.x + 0.055f) / 1.055f, 2.4f);
+    rgb.y = rgb.y <= 0.04045f ? rgb.y / 12.92f : _powf((rgb.y + 0.055f) / 1.055f, 2.4f);
+    rgb.z = rgb.z <= 0.04045f ? rgb.z / 12.92f : _powf((rgb.z + 0.055f) / 1.055f, 2.4f);
+  } else {
+    rgb.x = rgb.x <= 0.0031308f ? 12.92f * rgb.x : 1.055f * _powf(rgb.x, 1.0f / 2.4f) - 0.055f;
+    rgb.y = rgb.y <= 0.0031308f ? 12.92f * rgb.y : 1.055f * _powf(rgb.y, 1.0f / 2.4f) - 0.055f;
+    rgb.z = rgb.z <= 0.0031308f ? 12.92f * rgb.z : 1.055f * _powf(rgb.z, 1.0f / 2.4f) - 0.055f;
+  }
+  return rgb;
+}

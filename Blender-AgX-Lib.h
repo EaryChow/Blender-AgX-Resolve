@@ -39,42 +39,20 @@ typedef struct {
     ---------------------------
 */
 
-// Gamut conversion Matrices
-//AP0, AP1 and P3D60 was changed to D65
 #define identity_mtx make_float3x3(make_float3(1.0f, 0.0f, 0.0f), make_float3(0.0f, 1.0f, 0.0f), make_float3(0.0f, 0.0f, 1.0f))
-#define matrix_ap0_to_xyz make_float3x3(make_float3(0.93863095f, -0.00574192f, 0.0175669f), make_float3(0.33809359f,0.7272139f, -0.0653075f), make_float3(0.00072312f, 0.00081844, 1.08751619f))
-#define matrix_ap1_to_xyz make_float3x3(make_float3(0.65241872f, 0.12717993f, 0.17085728f), make_float3(0.26806406f, 0.67246448f, 0.05947146f), make_float3(-0.00546993f,0.0051828f, 1.08934488f))
-#define matrix_p3d65_to_xyz make_float3x3(make_float3(0.486571133137f, 0.265667706728f, 0.198217317462f), make_float3(0.228974640369f, 0.691738605499f, 0.079286918044f), make_float3(-0.000000000000f, 0.045113388449, 1.043944478035f))
-#define matrix_p3d60_to_xyz make_float3x3(make_float3(0.504949748516f, 0.264681518078f, 0.183015048504f), make_float3(0.237623393536f, 0.689170777798f, 0.073206014931f), make_float3(-0.000000000000f, 0.044945921749f, 0.963879227638f))
-#define matrix_p3dci_to_xyz make_float3x3(make_float3(0.445170015097f, 0.277134418488f, 0.172282665968f), make_float3(0.209491759539f, 0.721595287323f, 0.068913064897f), make_float3(-0.000000000000f, 0.047060567886f, 0.907355427742f))
-#define matrix_rec2020_to_xyz make_float3x3(make_float3(0.636958122253f, 0.144616916776f, 0.168880969286f), make_float3(0.262700229883f, 0.677998125553f, 0.059301715344f), make_float3(0.000000000000f, 0.028072696179, 1.060985088348f))
-#define matrix_rec709_to_xyz make_float3x3(make_float3(0.412390917540f, 0.357584357262f, 0.180480793118f), make_float3(0.212639078498f, 0.715168714523f, 0.072192311287f), make_float3(0.019330825657f, 0.119194783270f, 0.950532138348f))
-#define matrix_arriwg_to_xyz make_float3x3(make_float3(0.638007640839f, 0.214703813195f, 0.097744457424f), make_float3(0.291953772306f, 0.823840856552f, -0.115794822574f), make_float3(0.002798279049f, -0.067034222186, 1.153293848038f))
-#define matrix_redwg_to_xyz make_float3x3(make_float3(0.735275208950f, 0.068609409034f, 0.146571278572f), make_float3(0.286694079638f, 0.842979073524f, -0.129673242569f), make_float3(-0.079680845141f, -0.347343206406, 1.516081929207f))
-#define matrix_sonysgamut3 make_float3x3(make_float3(0.599083900452f, 0.248925492167f, 0.102446496487f), make_float3(0.215075820684f, 0.885068416595f, -0.100144319236f), make_float3(-0.032065849751f, -0.027658388019, 1.148782014847f))
-#define matrix_egamut_to_xyz make_float3x3(make_float3(0.705396831036f, 0.164041340351f, 0.081017754972f), make_float3(0.280130714178f, 0.820206701756f, -0.100337378681f), make_float3(-0.103781513870f, -0.072907261550, 1.265746593475f))
-#define matrix_davinciwg_to_xyz make_float3x3(make_float3(0.700622320175f, 0.148774802685f, 0.101058728993f), make_float3(0.274118483067f, 0.873631775379f, -0.147750422359f), make_float3(-0.098962903023f, -0.137895315886, 1.325916051865f))
-#define matrix_blackmagicwg_to_xyz make_float3x3(make_float3(0.606538414955f, 0.220412746072f, 0.123504832387f), make_float3(0.267992943525f, 0.832748472691f, -0.100741356611f), make_float3(-0.029442556202f, -0.086612440646, 1.205112814903f))
-#define matrix_canoncinema_to_xyz make_float3x3(make_float3(0.71604965f, 0.12968348f, 0.1047228f),make_float3(0.26126136f, 0.86964215f, -0.1309035f),make_float3(-0.00967635f, -0.23648164f, 1.33521573f))
-#define matrix_arriwg4_to_xyz make_float3x3(make_float3(0.704858320407232064f,  0.129760295170463003f, 0.115837311473976537f),make_float3(0.254524176404027025f, 0.781477732712002049f, 0.036001909116029039f),make_float3(0.0f, 0.0f, 1.089057750759878429f))
-#define matrix_agx_log_blender_to_xyz make_float3x3(make_float3(0.70955534f,  0.08564954f, 0.15525115f),make_float3(0.1726672f, 0.873754939f, -0.04642202f),make_float3(-0.16101085f, -0.07687426f, 1.32694321f))
 
 // Color Spaces Coordinates
-//AP0, AP1 and P3D60 was changed to D65
+//AP0, AP1 and P3D60 was changed to D65. Method is, first arrive at RGB D60 to XYZ D65 matrix by "Bradford matrix * RGB to XYZ D60 matrix", and then reverse engineer the D65 version of the primaries coordinates from the matrix.
 __CONSTANT__ Chromaticities AP0 =
-{ {0.734771f, 0.264663f}, {-0.00795f, 1.006817f}, {0.016895f, -0.062809f}, {0.3127f, 0.3129f} };
+{ {0.7348552433737107f, 0.2642253252455353f}, {-0.006170912478622476f, 1.0113149590212862f}, {0.01596755925504054f, -0.0642355031285507f}, {0.3127f, 0.3129f} };
 //__CONSTANT__ Chromaticities AP0 =
 //{ {0.7347f, 0.2653f}, {0.0f, 1.0f}, {0.0001f, -0.077f}, {0.32168f, 0.33767f} };
 __CONSTANT__ Chromaticities AP1 =
-{ {0.713016f, 0.292962f}, {0.158021f, 0.835539f}, {0.129469f, 0.045065f}, {0.3127f, 0.329f} };
-//__CONSTANT__ Chromaticities AP1 =
-//{ {0.713f, 0.293f}, {0.165f, 0.83f}, {0.128f, 0.044f}, {0.32168f, 0.33767f} };
+{ {0.7131958876620503f, 0.2926889144633257f}, {0.15950855654177495f, 0.8387885161509631f}, {0.12867299528535026f, 0.04389557116052796f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities REC709_PRI =
 { {0.64f, 0.33f}, {0.3f, 0.6f}, {0.15f, 0.06f}, {0.3127f, 0.329f} };
-__CONSTANT__ Chromaticities REC709_PRI_2012 =
-{ {0.6366613f, 0.33388708f}, {0.33235734f, 0.57712478f}, { 0.13868026f, 0.1068737f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities P3D60_PRI =
-{ {0.67912f, 0.32026f}, {0.25856f, 0.69172f}, {0.14946f, 0.05973f}, {0.3127, 0.329f} };
+{ {0.6793813705302119f, 0.32015311540444413f}, {0.2597770990951463f, 0.6939530572700782f}, {0.14869419443105955f, 0.05860092634705156f}, {0.3127, 0.329f} };
 __CONSTANT__ Chromaticities P3D65_PRI =
 { {0.68f, 0.32f}, {0.265f, 0.69f}, {0.15f, 0.06f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities P3DCI_PRI =
@@ -83,8 +61,6 @@ __CONSTANT__ Chromaticities ARRI_ALEXA_WG_PRI =
 { {0.684f, 0.313f}, {0.221f, 0.848f}, {0.0861f, -0.102f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities REC2020_PRI =
 { {0.708f, 0.292f}, {0.17f, 0.797f}, {0.131f, 0.046f}, {0.3127f, 0.329f} };
-__CONSTANT__ Chromaticities REC2020_PRI_2012 =
-{ {0.69977419f,  0.30022581f}, {0.22431866f, 0.76476346f}, {0.12136517f, 0.0961114f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities ARRI_ALEXA_WG4_PRI =
 { {0.7347f,  0.2653f}, {0.1424f, 0.8576f}, {0.0991f,-0.0308f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities SGAMUT3cine_PRI =

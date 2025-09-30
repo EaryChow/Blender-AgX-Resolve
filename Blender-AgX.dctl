@@ -14,15 +14,15 @@ DEFINE_UI_PARAMS(use_inverse_inset, Use Inverse of Inset for Outset, DCTLUI_CHEC
 DEFINE_UI_PARAMS(tp, Toe Contrast Power, DCTLUI_SLIDER_FLOAT, 1.5, 0.7, 10, 0.1)
 DEFINE_UI_PARAMS(sp, Shoulder Contrast Power, DCTLUI_SLIDER_FLOAT, 1.5, 0.7, 10, 0.1)
 DEFINE_UI_PARAMS(slope, General Contrast Power, DCTLUI_SLIDER_FLOAT, 2.4, 1.4, 4, 0.1)
-DEFINE_UI_PARAMS(in_gamut, Input Primaries, DCTLUI_COMBO_BOX, 5, {ap0, ap1, p3d65,p3d60, rec2020, rec709, awg3, awg4,rwg, sgamut3,sgamut3cine, blackmagicwg, canoncinema, davinciwg,egamut, agx_log_blender}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut, AgX Log Blender})
-DEFINE_UI_PARAMS(working_gamut, Working Primaries, DCTLUI_COMBO_BOX, 4, {workingap0, workingap1, workingp3d65, workingp3d60, workingrec2020, workingrec709, workingawg3, workingawg4, workingrwg, workingsgamut3,workingsgamut3cine, workingblackmagicwg, workingcanoncinema, workingdavinciwg,workingegamut}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
+DEFINE_UI_PARAMS(in_gamut, Input Primaries, DCTLUI_COMBO_BOX, 5, {ap0, ap1, p3d65,p3d60, rec2020, rec709, awg3, awg4,rwg, sgamut3,sgamut3cine, blackmagicwg, canoncinema, davinciwg,egamut, agx_log_blender}, {ACES2065 1, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut, AgX Log Blender})
+DEFINE_UI_PARAMS(working_gamut, Working Primaries, DCTLUI_COMBO_BOX, 4, {workingap0, workingap1, workingp3d65, workingp3d60, workingrec2020, workingrec709, workingawg3, workingawg4, workingrwg, workingsgamut3,workingsgamut3cine, workingblackmagicwg, workingcanoncinema, workingdavinciwg,workingegamut}, {ACES2065 1, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
 DEFINE_UI_PARAMS(in_transfer, Input Transfer Characteristic Encoding, DCTLUI_COMBO_BOX, 0, {in_linear, in_acescct, in_arri_logc, in_arri_logc4, in_red_log3g10, in_sony_slog3, in_blackmagic_film_gen5, in_canonlog3, in_davinci_intermediate, in_filmlight_tlog, in_AgX_Log_Kraken, in_AgX_Log_Blender}, {Linear, ACEScct, Arri V3LogC,Arri LogCV4, Red Log3G10, Sony SLog3, Blackmagic Film Gen5, Canon Log3, DaVinci Intermediate,Filmlight TLog, AgX Log Kraken, AgX Log Blender})
 DEFINE_UI_PARAMS(working_log, Working Log Encoding, DCTLUI_COMBO_BOX, 11, {linear, acescct, arri_logc,arri_logc4, red_log3g10, sony_slog3, blackmagic_film_gen5, canonlog3, davinci_intermediate,filmlight_tlog,AgX_Log_Kraken, generic_log2}, {Linear, ACEScct, Arri V3LogC,Arri LogCV4, Red Log3G10, Sony SLog3, Blackmagic Film Gen5, Canon Log3, DaVinci Intermediate,Filmlight TLog, AgX Log Kraken, Generic Log2})
 DEFINE_UI_PARAMS(generic_log2_min, Log2 Min Stop, DCTLUI_SLIDER_FLOAT, -10, -15, -5, 0.1)
 DEFINE_UI_PARAMS(generic_log2_max, Log2 Max Stop, DCTLUI_SLIDER_FLOAT, 6.5, 4.0, 15, 0.1)
 DEFINE_UI_PARAMS(log2_maintain_contrast, Maintain General Contrast, DCTLUI_CHECK_BOX, 1)
 DEFINE_UI_PARAMS(linear_midgray_percentage, MidGray, DCTLUI_SLIDER_FLOAT, 18, 10, 25, 0.01)
-DEFINE_UI_PARAMS(out_gamut, Output Primaries, DCTLUI_COMBO_BOX, 5, {outap0, outap1, outp3d65, outp3d60, outrec2020, outrec709, outawg3, outawg4, outrwg, outsgamut3, outsgamut3cine, outblackmagicwg, outcanoncinema, outdavinciwg, outegamut}, {ACES, ACEScg, P3D65,P3D60, Rec.2020, Rec.709, Alexa Wide Gamut 3,Alexa Wide Gamut 4, Red Wide Gamut RGB, Sony SGamut3,Sony SGamut3Cine, Blackmagic Wide Gamut, Canon Cinema - Gamut, DaVinci Wide Gamut,Filmlight E - Gamut})
+DEFINE_UI_PARAMS(out_gamut, Output Primaries, DCTLUI_COMBO_BOX, 2, {outp3d65, outrec2020, outrec709}, {P3D65, Rec.2020, Rec.709})
 DEFINE_UI_PARAMS(out_transfer, Output Transfer, DCTLUI_COMBO_BOX, 1, {out_linear, out_sRGB_inverse_EOTF, out_BT1886_inverse_EOTF, out_BT2100HLG_inverse_EOTF, out_BT2100PQ_inverse_EOTF, sRGB_piecewise}, { Linear, sRGB Inverse EOTF 2.2, BT.1886 Inverse EOTF 2.4, BT.2100-HLG Inverse EOTF, BT.2100-PQ Inverse EOTF, sRGB Piecewise})
 DEFINE_UI_PARAMS(logoutput, Log Encoded Output, DCTLUI_CHECK_BOX, 0)
 DEFINE_UI_PARAMS(angle_lerp, Hue Flight Strength, DCTLUI_SLIDER_FLOAT, 1.0, 0.0, 1.0, 0.01)
@@ -52,15 +52,15 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
   float hdr_sdr_ratio = hdr_peak / sdr_peak;
 
   if (in_gamut == ap0) {
-    in_to_xyz = matrix_ap0_to_xyz;
+    in_to_xyz = RGBtoXYZ(AP0);
     in_chromaticities = AP0;
   }
   else if (in_gamut == ap1) {
-    in_to_xyz = matrix_ap1_to_xyz;
+    in_to_xyz = RGBtoXYZ(AP1);
     in_chromaticities = AP1;
   }
   else if (in_gamut == p3d65){
-    in_to_xyz = matrix_p3d65_to_xyz;
+    in_to_xyz = RGBtoXYZ(P3D65_PRI);
     in_chromaticities = P3D65_PRI;
   }
   else if (in_gamut == p3d60){
@@ -68,39 +68,39 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     in_chromaticities = P3D60_PRI;
   }
   else if (in_gamut == rec2020){
-    in_to_xyz = matrix_rec2020_to_xyz;
+    in_to_xyz = RGBtoXYZ(REC2020_PRI);
     in_chromaticities = REC2020_PRI;
   }
   else if (in_gamut == rec709){
-    in_to_xyz = matrix_rec709_to_xyz;
+    in_to_xyz = RGBtoXYZ(REC709_PRI);
     in_chromaticities = REC709_PRI;
   }
   else if (in_gamut == awg3){
-    in_to_xyz = matrix_arriwg_to_xyz;
+    in_to_xyz = RGBtoXYZ(ARRI_ALEXA_WG_PRI);
     in_chromaticities = ARRI_ALEXA_WG_PRI;
   }
   else if (in_gamut == rwg){
-    in_to_xyz = matrix_redwg_to_xyz;
+    in_to_xyz = RGBtoXYZ(REDWG_PRI);
     in_chromaticities = REDWG_PRI;
   }
   else if (in_gamut == sgamut3){
-    in_to_xyz = matrix_sonysgamut3;
+    in_to_xyz = RGBtoXYZ(SGAMUT3_PRI);
     in_chromaticities = SGAMUT3_PRI;
   }
   else if (in_gamut == blackmagicwg){
-    in_to_xyz = matrix_blackmagicwg_to_xyz;
+    in_to_xyz = RGBtoXYZ(BLACKMAGICWG_PRI);
     in_chromaticities = BLACKMAGICWG_PRI;
   }
   else if (in_gamut == canoncinema){
-    in_to_xyz = matrix_canoncinema_to_xyz;
+    in_to_xyz = RGBtoXYZ(CANONCINEMA_PRI);
     in_chromaticities = CANONCINEMA_PRI;
   }
   else if (in_gamut == davinciwg){
-    in_to_xyz = matrix_davinciwg_to_xyz;
+    in_to_xyz = RGBtoXYZ(DWGINT_PRI);
     in_chromaticities = DWGINT_PRI;
   }
   else if (in_gamut == egamut){
-    in_to_xyz = matrix_egamut_to_xyz;
+    in_to_xyz = RGBtoXYZ(EGAMUT_PRI);
     in_chromaticities = EGAMUT_PRI;
   }
   else if (in_gamut == awg4){
@@ -163,65 +163,17 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     working_chromaticities = SGAMUT3cine_PRI;
   }
 
-  if (out_gamut == outap0) {
-    out_to_xyz = matrix_ap0_to_xyz;
-    out_chromaticities = AP0;
-  }
-  else if (out_gamut == outap1) {
-    out_to_xyz = matrix_ap1_to_xyz;
-    out_chromaticities = AP1;
-  }
-  else if (out_gamut == outp3d65){
-    out_to_xyz = matrix_p3d65_to_xyz;
+  if (out_gamut == outp3d65){
+    out_to_xyz = RGBtoXYZ(P3D65_PRI);
     out_chromaticities = P3D65_PRI;
   }
-  else if (out_gamut == outp3d60){
-    out_to_xyz = RGBtoXYZ(P3D60_PRI);
-    out_chromaticities = P3D60_PRI;
-  }
   else if (out_gamut == outrec2020){
-    out_to_xyz = matrix_rec2020_to_xyz;
+    out_to_xyz = RGBtoXYZ(REC2020_PRI);
     out_chromaticities = REC2020_PRI;
   }
   else if (out_gamut == outrec709){
-    out_to_xyz = matrix_rec709_to_xyz;
+    out_to_xyz = RGBtoXYZ(REC709_PRI);
     out_chromaticities = REC709_PRI;
-  }
-  else if (out_gamut == outawg3){
-    out_to_xyz = matrix_arriwg_to_xyz;
-    out_chromaticities = ARRI_ALEXA_WG_PRI;
-  }
-  else if (out_gamut == outrwg){
-    out_to_xyz = matrix_redwg_to_xyz;
-    out_chromaticities = REDWG_PRI;
-  }
-  else if (out_gamut == outsgamut3){
-    out_to_xyz = matrix_sonysgamut3;
-    out_chromaticities = SGAMUT3_PRI;
-  }
-  else if (out_gamut == outblackmagicwg){
-    out_to_xyz = matrix_blackmagicwg_to_xyz;
-    out_chromaticities = BLACKMAGICWG_PRI;
-  }
-  else if (out_gamut == outcanoncinema){
-    out_to_xyz = matrix_canoncinema_to_xyz;
-    out_chromaticities = CANONCINEMA_PRI;
-  }
-  else if (out_gamut == outdavinciwg){
-    out_to_xyz = matrix_davinciwg_to_xyz;
-    out_chromaticities = DWGINT_PRI;
-  }
-  else if (out_gamut == outegamut){
-    out_to_xyz = matrix_egamut_to_xyz;
-    out_chromaticities = EGAMUT_PRI;
-  }
-  else if (out_gamut == outawg4){
-    out_to_xyz = RGBtoXYZ(ARRI_ALEXA_WG4_PRI);
-    out_chromaticities = ARRI_ALEXA_WG4_PRI;
-  }
-  else if (out_gamut == outsgamut3cine){
-    out_to_xyz = RGBtoXYZ(SGAMUT3cine_PRI);
-    out_chromaticities = SGAMUT3cine_PRI;
   }
 
   if (out_transfer == out_linear) {

@@ -43,6 +43,8 @@ typedef struct {
 
 // Color Spaces Coordinates
 //AP0, AP1 and P3D60 was changed to D65. Method is, first arrive at RGB D60 to XYZ D65 matrix by "Bradford matrix * RGB to XYZ D60 matrix", and then reverse engineer the D65 version of the primaries coordinates from the matrix.
+//This appraoch basically baked the Bradford adaptation matrix into the primaries coordinates relative to D65.
+//P3DCI also adapted to D65 coordinates using the same approach.
 __CONSTANT__ Chromaticities AP0 =
 { {0.7348552433737107f, 0.2642253252455353f}, {-0.006170912478622476f, 1.0113149590212862f}, {0.01596755925504054f, -0.0642355031285507f}, {0.3127f, 0.329f} };
 //__CONSTANT__ Chromaticities AP0 =
@@ -56,7 +58,7 @@ __CONSTANT__ Chromaticities P3D60_PRI =
 __CONSTANT__ Chromaticities P3D65_PRI =
 { {0.68f, 0.32f}, {0.265f, 0.69f}, {0.15f, 0.06f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities P3DCI_PRI =
-{ {0.68f, 0.32f}, {0.265f, 0.69f}, {0.15f, 0.06f}, {0.314f, 0.351f} };
+{ {0.680701401314748f, 0.3188954328985409f}, {0.28120700362868956f, 0.6741679571843063f}, {0.14883188869747185f, 0.05766741627278289f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities ARRI_ALEXA_WG_PRI =
 { {0.684f, 0.313f}, {0.221f, 0.848f}, {0.0861f, -0.102f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities REC2020_PRI =

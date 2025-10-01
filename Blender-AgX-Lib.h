@@ -68,7 +68,7 @@ __CONSTANT__ Chromaticities ARRI_ALEXA_WG4_PRI =
 __CONSTANT__ Chromaticities SGAMUT3cine_PRI =
 { {0.766f,  0.275f}, {0.225f, 0.8f}, {0.089f, -0.087f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities SGAMUT3_PRI =
-{ {0.73f,  0.28f}, {0.14f, 0.855f}, {0.01f, -0.05f}, {0.3127f, 0.329f} };
+{ {0.73f,  0.28f}, {0.14f, 0.855f}, {0.1f, -0.05f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities EGAMUT_PRI =
 { {0.8f,  0.3177f}, {0.18f, 0.9f}, {0.065f, -0.0805f}, {0.3127f, 0.329f} };
 __CONSTANT__ Chromaticities DWGINT_PRI =

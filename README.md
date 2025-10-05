@@ -104,8 +104,8 @@ Checkbox to enable HDR-specific logic. When enabled, the middle grey of the imag
 ## HDR Peak Nits
 The peak nits for HDR output. UI limited to [400, 1000] with default of 1000.
 
-## SDR Peak Nits
-The SDR peak nits assumption. UI limted to [100, 400] with default of 203. Blender's LUT sets it to 100.
+## HDR Midgray Factor
+The display nits value that Midgray percentage is relative to. Blender's LUT sets it to 100.
 
 ## HDR Extra Shoulder Power
 Apply extra multiplier to sigmoid's shoulder power parameter, compensating for HDR's middle gray darkening.
